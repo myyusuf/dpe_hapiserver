@@ -1,6 +1,9 @@
 'use strict';
 
 const DashboardMain = require('./dashboard_main');
+const DashboardChart = require('./dashboard_chart');
+
+const MONHTS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
 
 exports.getDashboardData = function(request, reply) {
 
@@ -30,7 +33,7 @@ exports.getDashboardData = function(request, reply) {
           lk: 0
       },
       data4: {
-          title: "RKAP",
+          title: "Sisa",
           ok: 0,
           op: 0,
           lsp: 0,
@@ -66,7 +69,7 @@ exports.getDashboardData = function(request, reply) {
       }
   };
 
-  var ri = DashboardMain.getMainData(this.db, month, year, function(mainData){
+  DashboardMain.getMainData(this.db, month, year, function(mainData){
     result.data1.ok = mainData.sum_rkap_ok;
     result.data1.op = mainData.sum_rkap_op;
     result.data1.lk = mainData.sum_rkap_lk;
@@ -152,7 +155,25 @@ exports.dashboardOk = function(request, reply) {
         }
     ]
 
-    reply(result);
+    // reply(result);
+
+    var year = request.params.year;
+
+    var result = [];
+    DashboardChart.getChartData(this.db, year, function(chartDataList){
+
+      for(var i=0; i<chartDataList.length; i++){
+        var chartData = chartDataList[i];
+        var okData = {
+          month: MONHTS[chartData.month - 1],
+          plan: chartData.sum_rkap_ok,
+          actual: chartData.sum_realisasi_ok
+        }
+        result.push(okData);
+      }
+      reply(result);
+    });
+
 };
 
 exports.dashboardOp = function(request, reply) {

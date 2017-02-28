@@ -22,7 +22,7 @@ server.route(require('./routes'));
 
 // Registering the Good plugin
 
-server.register({
+server.register([{
     register: require('good'),
     options: {
         reporters: [{
@@ -32,7 +32,7 @@ server.register({
             }
         }]
     }
-}, (err) => {
+}, {register: require('inert')}], (err) => {
 
     if (err) {
         throw err;
