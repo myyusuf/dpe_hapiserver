@@ -16,13 +16,10 @@ server.connection({
 
 server.bind({ db: db });
 
-// Setting up routes
-
-server.route(require('./routes'));
-
 // Registering the Good plugin
 
-server.register([{
+server.register([
+  {
     register: require('good'),
     options: {
         reporters: [{
@@ -32,11 +29,22 @@ server.register([{
             }
         }]
     }
-}, {register: require('inert')}], (err) => {
+  },
+  {
+    register: require('inert')
+  },
+  {
+    register: require('vision')
+  }
+], (err) => {
 
     if (err) {
         throw err;
     }
+
+    // Setting up routes
+
+    server.route(require('./routes'));
 
     // Starting the server
 

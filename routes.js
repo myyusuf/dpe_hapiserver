@@ -2,6 +2,8 @@
 
 const ExcelReader = require('./handlers/excelreader');
 const Dashboard = require('./handlers/dashboard');
+const Pages = require('./handlers/pages');
+const Assets = require('./handlers/assets');
 
 module.exports = [
   {
@@ -33,5 +35,15 @@ module.exports = [
     method: 'GET',
     path: '/dashboard/lsp/{year}',
     handler: Dashboard.dashboardLsp
+  },
+  {
+      method: 'GET',
+      path: '/',
+      handler: Pages.home
+  },
+  {
+      method: 'GET',
+      path: '/{param*}',
+      handler: Assets.servePublicDirectory
   }
 ];
