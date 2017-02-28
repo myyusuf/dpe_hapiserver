@@ -1,1 +1,60 @@
-Test
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+
+    <link rel="stylesheet" href="/pcd_assets/lib/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link rel="stylesheet" href="/pcd_assets/lib/jqwidgets/styles/jqx.light.css" type="text/css" />
+    <link rel="stylesheet" href="/pcd_assets/lib/jqwidgets/styles/jqx.metro.css" type="text/css" />
+
+    <link rel="stylesheet" href="/pcd_assets/css/main.css">
+
+    <script src="pcd_assets/lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="pcd_assets/lib/jquery/jquery-dateformat.js"></script>
+    <script src="pcd_assets/lib/jqwidgets/jqx-all.js"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+
+
+    <div id="header">
+         <img src="pcd_assets/images/dpe_logo_small.png" class="logo-small"/>
+
+         <a href="/logout" style="font-family: arial; font-size: 15px; font-weight: bold; color: #4A90E2; text-decoration: none; float: right; margin-top: 10px; margin-right: 20px;">Logout</a>
+       <span style="font-family: arial; font-size: 16px; color: #4A90E2; text-decoration: none; float: right; margin-top: 10px; margin-right: 5px;">
+         User | </span>
+     </div>
+     <div id="top-menu"></div>
+     <div id="menu">
+         <!-- LEFT COLUMN CONTENT GOES HERE -->
+     </div>
+     <div id="content">
+       <div id="content-inside">
+         <div class="splitter-panel" id="left-content"></div>
+         <div class="splitter-panel" id="right-content"></div>
+      </div>
+     </div>
+
+     <div id="footer">
+         <!-- FOOTER CONTENT GOES HERE -->
+     </div>
+
+     <div id="dialogWindowContainer"></div>
+
+     <div id="successNotification">
+         <div>
+             Proses berhasil
+         </div>
+     </div>
+
+     <div id="errorNotification">
+         <div>
+             Proses gagal
+         </div>
+     </div>
+
+     <script src="app/notification.js"></script>
+     <script src="app/bundle.js"></script>
+  </body>
+</html>
