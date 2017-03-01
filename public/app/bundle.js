@@ -834,6 +834,8 @@
 	    this.placeHolder = options.placeHolder;
 
 	    this.initialValue = options.value;
+
+	    this.disabled = options.disabled;
 	  }
 
 	  _createClass(TextBox, [{
@@ -857,6 +859,10 @@
 
 	      if (this.placeHolder) {
 	        textBoxOptions['placeHolder'] = this.placeHolder;
+	      }
+
+	      if (this.disabled) {
+	        textBoxOptions['disabled'] = this.disabled;
 	      }
 
 	      textBoxContainer.jqxInput(textBoxOptions);
@@ -1037,11 +1043,11 @@
 
 	      var _this = this;
 
-	      var url = "/projects";
+	      var url = "/api/projects";
 
 	      var source = {
 	        datatype: "json",
-	        datafields: [{ name: 'id', type: 'int' }, { name: 'code', type: 'string' }, { name: 'name', type: 'string' }, { name: 'projectType', type: 'int' }, { name: 'description', type: 'string' }],
+	        datafields: [{ name: 'id', type: 'int' }, { name: 'code', type: 'string' }, { name: 'name', type: 'string' }, { name: 'project_type', type: 'int' }, { name: 'description', type: 'string' }],
 	        id: "id",
 	        url: url
 	      };
@@ -1081,7 +1087,7 @@
 	        rendergridrows: function rendergridrows(params) {
 	          return params.data;
 	        },
-	        columns: [{ text: 'Kode', datafield: 'code', width: '20%' }, { text: 'Nama', datafield: 'name', width: '20%' }, { text: 'Tipe', datafield: 'projectType', cellsrenderer: cellsrenderer, width: '30%' }, { text: 'Deskripsi', datafield: 'description', width: '30%' }],
+	        columns: [{ text: 'Kode', datafield: 'code', width: '20%' }, { text: 'Nama', datafield: 'name', width: '20%' }, { text: 'Tipe', datafield: 'project_type', cellsrenderer: cellsrenderer, width: '30%' }, { text: 'Deskripsi', datafield: 'description', width: '30%' }],
 	        groups: []
 	      };
 
@@ -1331,7 +1337,7 @@
 	        rule: 'required'
 	      }
 	    }, {
-	      name: 'projectType',
+	      name: 'project_type',
 	      label: 'Type',
 	      content: projectTypeComboBox,
 	      validation: {
@@ -1349,7 +1355,7 @@
 	      onValidationSuccess: function onValidationSuccess(formValue) {
 	        $.ajax({
 	          method: "POST",
-	          url: "/projects",
+	          url: "/api/projects",
 	          data: JSON.stringify(formValue),
 	          beforeSend: function beforeSend(xhr) {
 	            xhr.setRequestHeader('Accept', 'application/json');
@@ -1970,7 +1976,7 @@
 	    var project = options.data;
 	    this.onSaveSuccess = options.onSaveSuccess;
 
-	    var codeTextBox = new _TextBox2.default({ value: project.code, height: 25, width: '90%' });
+	    var codeTextBox = new _TextBox2.default({ value: project.code, disabled: true, height: 25, width: '90%' });
 	    var nameTextBox = new _TextBox2.default({ value: project.name, height: 25, width: '90%' });
 	    var projectTypeComboBox = new _ProjectTypeComboBox2.default({ value: project.projectType, height: 80, width: '92.5%' });
 	    var descriptionTextBox = new _TextArea2.default({ value: project.description, height: 80, width: '92.5%' });
@@ -1992,7 +1998,7 @@
 	        rule: 'required'
 	      }
 	    }, {
-	      name: 'projectType',
+	      name: 'project_type',
 	      label: 'Type',
 	      content: projectTypeComboBox,
 	      validation: {
@@ -2010,7 +2016,7 @@
 	      onValidationSuccess: function onValidationSuccess(formValue) {
 	        $.ajax({
 	          method: "PUT",
-	          url: "/projects/" + project.code,
+	          url: "/api/projects/" + project.code,
 	          data: JSON.stringify(formValue),
 	          beforeSend: function beforeSend(xhr) {
 	            xhr.setRequestHeader('Accept', 'application/json');
@@ -2048,7 +2054,7 @@
 	        if (r == true) {
 	          $.ajax({
 	            method: "DELETE",
-	            url: "/projects/" + project.code,
+	            url: "/api/projects/" + project.code,
 	            data: {}
 	          }).done(function () {
 	            $("#successNotification").jqxNotification("open");
@@ -2056,7 +2062,7 @@
 	            if (_this.onSaveSuccess) {
 	              _this.onSaveSuccess();
 	            }
-	          }).fail(function () {
+	          }).fail(function (jqXHR, textStatus, errorThrown) {
 	            var errorMessage = 'Proses gagal. Status : ' + jqXHR.status + ' [' + jqXHR.statusText + '] : ' + jqXHR.responseText;
 	            $("#errorNotification").html('<div>' + errorMessage + '</div>');
 	            $("#errorNotification").jqxNotification("open");
@@ -2317,11 +2323,11 @@
 
 	      var _this = this;
 
-	      var url = "/project_progress";
+	      var url = "/api/project_progress";
 
 	      var source = {
 	        datatype: "json",
-	        datafields: [{ name: 'id', type: 'int' }, { name: 'project' }, { name: 'project_code', type: 'string', map: 'project>code' }, { name: 'month', type: 'int' }, { name: 'year', type: 'int' }, { name: 'rkapOk', type: 'float' }, { name: 'rkapOp', type: 'float' }, { name: 'rkapLk', type: 'float' }, { name: 'prognosaOk', type: 'float' }, { name: 'prognosaOp', type: 'float' }, { name: 'prognosaLk', type: 'float' }, { name: 'realisasiOk', type: 'float' }, { name: 'realisasiOp', type: 'float' }, { name: 'realisasiLk', type: 'float' }, { name: 'description', type: 'string' }],
+	        datafields: [{ name: 'id', type: 'int' }, { name: 'project_code', type: 'string' }, { name: 'month', type: 'int' }, { name: 'year', type: 'int' }, { name: 'rkap_ok', type: 'float' }, { name: 'rkap_op', type: 'float' }, { name: 'rkap_lk', type: 'float' }, { name: 'prognosa_ok', type: 'float' }, { name: 'prognosa_op', type: 'float' }, { name: 'prognosa_lk', type: 'float' }, { name: 'realisasi_ok', type: 'float' }, { name: 'realisasi_op', type: 'float' }, { name: 'realisasi_lk', type: 'float' }, { name: 'description', type: 'string' }],
 	        id: "id",
 	        url: url
 	      };
@@ -2343,7 +2349,7 @@
 	        rendergridrows: function rendergridrows(params) {
 	          return params.data;
 	        },
-	        columns: [{ text: 'Project Code', datafield: 'project_code', width: columnWidth }, { text: 'Bulan', datafield: 'month', width: columnWidth }, { text: 'Tahun', datafield: 'year', width: columnWidth }, { text: 'RKAP OK', datafield: 'rkapOk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'RKAP OP', datafield: 'rkapOp', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'RKAP LK', datafield: 'rkapLk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Prognosa OK', datafield: 'prognosaOk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Prognosa OP', datafield: 'prognosaOp', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Prognosa LK', datafield: 'prognosaLk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Realisasi OK', datafield: 'realisasiOk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Realisasi OP', datafield: 'realisasiOp', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Realisasi LK', datafield: 'realisasiLk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }],
+	        columns: [{ text: 'Project Code', datafield: 'project_code', width: columnWidth }, { text: 'Bulan', datafield: 'month', width: columnWidth }, { text: 'Tahun', datafield: 'year', width: columnWidth }, { text: 'RKAP OK', datafield: 'rkap_ok', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'RKAP OP', datafield: 'rkap_op', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'RKAP LK', datafield: 'rkap_lk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Prognosa OK', datafield: 'prognosa_ok', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Prognosa OP', datafield: 'prognosa_op', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Prognosa LK', datafield: 'prognosa_lk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Realisasi OK', datafield: 'realisasi_ok', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Realisasi OP', datafield: 'realisasi_op', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }, { text: 'Realisasi LK', datafield: 'realisasi_lk', width: columnWidth, cellsalign: 'right', cellsformat: 'd2' }],
 	        groups: ['project_code']
 	      };
 
@@ -2374,7 +2380,13 @@
 	        }
 	      });
 
-	      var fileUpload = new _FileUpload2.default({ height: 35, width: 103, uploadUrl: '/project_progress/upload', fileInputName: 'progress' });
+	      // var fileUpload = new FileUpload({height: 35, width: 103, uploadUrl: '/project_progress/upload', fileInputName: 'progress'});
+	      var fileUpload = new _FileUpload2.default({
+	        height: 35,
+	        width: 103,
+	        uploadUrl: 'api/project_progress/upload',
+	        fileInputName: 'progress'
+	      });
 
 	      var uploadButton = new _Button2.default({
 	        title: 'Upload',
@@ -2444,6 +2456,9 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	//DON'T PUT THIS IN <form></form> TAG
+	//THIS IS NOT PART OF FORM!!!!!
+
 	var FileUpload = function () {
 	  function FileUpload(options) {
 	    _classCallCheck(this, FileUpload);
@@ -2458,13 +2473,8 @@
 	      this.height = options.height;
 	    }
 
-	    if (options.uploadUrl) {
-	      this.uploadUrl = options.uploadUrl;
-	    }
-
-	    if (options.fileInputName) {
-	      this.fileInputName = options.fileInputName;
-	    }
+	    this.uploadUrl = options.uploadUrl;
+	    this.fileInputName = options.fileInputName;
 	  }
 
 	  _createClass(FileUpload, [{
@@ -2480,25 +2490,20 @@
 
 	      if (this.width) {
 	        fileUploadOptions['width'] = this.width;
+	      } else {
+	        fileUploadOptions['width'] = 300;
 	      }
 
 	      if (this.height) {
 	        fileUploadOptions['height'] = this.height;
 	      }
 
-	      if (this.uploadUrl) {
-	        fileUploadOptions['uploadUrl'] = this.uploadUrl;
-	      }
-
-	      if (this.fileInputName) {
-	        fileUploadOptions['fileInputName'] = this.fileInputName;
-	      }
+	      fileUploadOptions['uploadUrl'] = this.uploadUrl;
+	      fileUploadOptions['fileInputName'] = this.fileInputName;
+	      fileUploadOptions['multipleFilesUpload'] = false;
+	      fileUploadOptions['autoUpload'] = true;
 
 	      fileUploadContainer.jqxFileUpload(fileUploadOptions);
-
-	      if (this.initialValue) {
-	        fileUploadContainer.val(this.initialValue);
-	      }
 
 	      this.component = fileUploadContainer;
 	    }
@@ -2508,14 +2513,9 @@
 	      return this.id;
 	    }
 	  }, {
-	    key: 'getValue',
-	    value: function getValue() {
-	      return this.component.val();
-	    }
-	  }, {
-	    key: 'uploadFile',
-	    value: function uploadFile() {
-	      this.component.jqxFileUpload('uploadFile', 0);
+	    key: 'upload',
+	    value: function upload() {
+	      return this.component.jqxFileUpload('uploadAll');
 	    }
 	  }]);
 
