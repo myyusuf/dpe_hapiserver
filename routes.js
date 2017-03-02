@@ -18,7 +18,7 @@ module.exports = [
       handler: Pages.home,
       config: {
           auth: {
-              mode: 'required'
+              mode: 'try'
           }
         }
   },
