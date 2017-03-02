@@ -2,7 +2,7 @@
 
 exports.validateFunc = function (token, callback) {
 
-    this.get('SELECT * FROM users WHERE token = ?', [token], (err, result) => {
+    this.query('SELECT * FROM users WHERE token = ?', [token], (err, result) => {
 
         if (err) {
             return callback(err, false);

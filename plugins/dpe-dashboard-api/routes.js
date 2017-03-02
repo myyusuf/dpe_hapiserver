@@ -53,7 +53,10 @@ module.exports = [
   {
       method: 'GET',
       path: '/api/projects',
-      handler: Project.find
+      handler: Project.find,
+      config: {
+          auth: 'api'
+      }
   },
   {
       method: 'PUT',

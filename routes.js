@@ -24,6 +24,16 @@ module.exports = [
   },
   {
       method: 'GET',
+      path: '/projects',
+      handler: Pages.projects,
+      // config: {
+      //     auth: {
+      //         mode: 'try'
+      //     }
+      //   }
+  },
+  {
+      method: 'GET',
       path: '/login',
       handler: Pages.login
   },
