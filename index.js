@@ -50,13 +50,16 @@ server.register([
     }
   },
   {
-    register: require('hapi-auth-basic')
+    register: require('hapi-auth-cookie')
   },
   {
     register: require('inert')
   },
   {
     register: require('vision')
+  },
+  {
+    register: require('./plugins/dpe-dashboard-api')
   }
 ], (err) => {
 
@@ -64,14 +67,29 @@ server.register([
         throw err;
     }
 
-    server.auth.strategy('simple', 'basic', { validateFunc: validate });
+    server.views({
+        engines: {
+            hbs: require('handlebars')
+        },
+        relativeTo: __dirname,
+        path: './views',
+        layoutPath: './views/layout',
+        layout: true,
+        isCached: false,
+        helpersPath: './views/helpers',
+        partialsPath: './views/partials'
+    });
+
+    // server.auth.strategy('simple', 'basic', { validateFunc: validate });
+    server.auth.strategy('session', 'cookie', 'try', {
+        password: '70fe4f26ff9bcb5aab079875cadeec09',
+        isSecure: false
+    });
 
     // Setting up routes
-
     server.route(require('./routes'));
 
     // Starting the server
-
     server.start((err) => {
 
         if (err) {
