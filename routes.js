@@ -62,5 +62,18 @@ module.exports = [
               output: 'file'
           }
       }
+  },
+  {
+      method: 'GET',
+      path: '/hello',
+      handler: function(request, reply){
+        reply({result: 'hello'});
+      },
+      config: {
+          auth: {
+            strategy: 'session',
+            scope: ['adminweb']
+          }
+      }
   }
 ];

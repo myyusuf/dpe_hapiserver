@@ -21,7 +21,8 @@ exports.login = function (request, reply) {
 
       request.cookieAuth.set({
           token: payload.token,
-          username: payload.username
+          username: payload.username,
+          scope: ['adminweb']
       });
       reply.redirect(this.webBaseUrl);
   });
