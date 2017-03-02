@@ -2,34 +2,11 @@
 
 exports.home = function (request, reply) {
 
-    // reply.file('./index.html');
-    const recipes = [{
-        id: 1,
-        name: 'Silicate soup',
-        cuisine: 'Martian',
-        stars: 100,
-        serves: 1,
-        prep_time: '2 hours',
-        cooking_time: '12 minutes'
-    }, {
-        id: 2,
-        name: 'Methane trifle',
-        cuisine: 'Neptunian',
-        stars: 200,
-        serves: 1,
-        prep_time: '1 hours',
-        cooking_time: '24 minutes'
-    }];
-
     reply.view('index', {
-        recipes: recipes
+        user: request.auth.credentials.username
     });
 };
 
-exports.loginView = function (request, reply) {
-    reply.view('login', {}, {layout: 'login_layout'});
-};
-
 exports.login = function (request, reply) {
-    reply.redirect(this.webBaseUrl);
+    reply.view('login', {}, {layout: 'login_layout'});
 };

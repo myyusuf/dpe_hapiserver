@@ -2,6 +2,7 @@
 
 const ExcelReader = require('./handlers/excelreader');
 const Pages = require('./handlers/pages');
+const Actions = require('./handlers/actions');
 const Assets = require('./handlers/assets');
 const ProjectProgress = require('./handlers/project_progress');
 
@@ -14,17 +15,27 @@ module.exports = [
   {
       method: 'GET',
       path: '/',
-      handler: Pages.home
+      handler: Pages.home,
+      config: {
+          auth: {
+              mode: 'required'
+          }
+        }
   },
   {
       method: 'GET',
       path: '/login',
-      handler: Pages.loginView
+      handler: Pages.login
   },
   {
       method: 'POST',
       path: '/login',
-      handler: Pages.login
+      handler: Actions.login
+  },
+  {
+      method: 'GET',
+      path: '/logout',
+      handler: Actions.logout
   },
   {
       method: 'GET',
