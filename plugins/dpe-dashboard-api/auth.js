@@ -16,7 +16,8 @@ exports.validateFunc = function (token, callback) {
 
         callback(null, true, {
             id: user.id,
-            username: user.username
+            username: user.username,
+            scope: ['admin']
         });
     });
 };

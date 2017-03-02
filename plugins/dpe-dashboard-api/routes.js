@@ -55,7 +55,10 @@ module.exports = [
       path: '/api/projects',
       handler: Project.find,
       config: {
-          auth: 'api'
+          auth: {
+            strategy: 'api',
+            scope: ['admin']
+          }
       }
   },
   {
