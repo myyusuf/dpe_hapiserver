@@ -10,8 +10,6 @@ exports.home = function (request, reply) {
     return reply.redirect(this.webBaseUrl + '/login');
   }
 
-
-
 };
 
 exports.login = function (request, reply) {

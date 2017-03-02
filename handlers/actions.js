@@ -1,9 +1,30 @@
+const Wreck = require('wreck');
+
 exports.login = function (request, reply) {
-  request.cookieAuth.set({
-      token: '12345',
-      username: 'yusuf'
+
+  const apiUrl = this.apiBaseUrl + '/login';
+
+  Wreck.post(apiUrl, {
+      payload: JSON.stringify(request.payload),
+      json: true
+  }, (err, res, payload) => {
+
+      if (err) {
+          throw err;
+      }
+
+      // console.log('Payload : ' + JSON.stringify(payload));
+
+      if (res.statusCode !== 200) {
+          return reply.redirect(this.webBaseUrl + '/login');
+      }
+
+      request.cookieAuth.set({
+          token: payload.token,
+          username: payload.username
+      });
+      reply.redirect(this.webBaseUrl);
   });
-  reply.redirect(this.webBaseUrl);
 };
 
 exports.logout = function (request, reply) {
