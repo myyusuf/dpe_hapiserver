@@ -19,6 +19,11 @@ module.exports = [
   {
       method: 'GET',
       path: '/login',
+      handler: Pages.loginView
+  },
+  {
+      method: 'POST',
+      path: '/login',
       handler: Pages.login
   },
   {

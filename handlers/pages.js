@@ -26,6 +26,10 @@ exports.home = function (request, reply) {
     });
 };
 
+exports.loginView = function (request, reply) {
+    reply.view('login', {}, {layout: 'login_layout'});
+};
+
 exports.login = function (request, reply) {
-    reply.view('login');
+    reply.redirect(this.webBaseUrl);
 };

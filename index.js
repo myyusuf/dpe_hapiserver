@@ -33,7 +33,13 @@ server.connection({
     port: 4000
 });
 
-server.bind({ db: db });
+server.bind(
+  {
+    db: db,
+    apiBaseUrl: 'http://localhost:4000/api',
+    webBaseUrl: 'http://localhost:4000' 
+  }
+);
 
 // Registering the Good plugin
 
