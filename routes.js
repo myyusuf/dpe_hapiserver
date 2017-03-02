@@ -17,6 +17,9 @@ module.exports = [
   {
     method: 'GET',
     path: '/dashboard',
+    config: {
+        auth: 'simple',
+    },
     handler: Dashboard.getDashboardData
   },
   {

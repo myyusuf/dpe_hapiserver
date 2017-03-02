@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "hapi": "^13.5.3",
+    "hapi-auth-basic": "4.x.x",
     "good": "6.x.x",
     "good-console": "5.x.x",
     "xlsx": "^0.8.5",

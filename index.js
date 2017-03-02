@@ -7,6 +7,25 @@ const configDB = require('./config/database.js');
 //Mysql
 const db = mysql.createConnection(configDB.mysqlConnectionData);
 
+const validUsers = {
+    john: 'secret',
+    jane: 'topsecret'
+};
+
+const validate = function (request, username, password, callback) {
+
+    const err = null;
+    let isValid = false;
+    let credentials = {};
+
+    if (validUsers[username] && validUsers[username] === password) {
+        isValid = true;
+        credentials = { username: username };
+    }
+
+    callback(err, isValid, credentials);
+};
+
 // Creating a Hapi server
 
 const server = new Hapi.Server();
@@ -31,6 +50,9 @@ server.register([
     }
   },
   {
+    register: require('hapi-auth-basic')
+  },
+  {
     register: require('inert')
   },
   {
@@ -41,6 +63,8 @@ server.register([
     if (err) {
         throw err;
     }
+
+    server.auth.strategy('simple', 'basic', { validateFunc: validate });
 
     // Setting up routes
 
