@@ -125,21 +125,98 @@ exports.readExcel = function (request, reply) {
       });
     }
 
-
     reply(result);
 };
 
-// private int month;
-// 	private int year;
-//
-// 	private BigDecimal rkapOk;
-// 	private BigDecimal rkapOp;
-// 	private BigDecimal rkapLk;
-//
-// 	private BigDecimal prognosaOk;
-// 	private BigDecimal prognosaOp;
-// 	private BigDecimal prognosaLk;
-//
-// 	private BigDecimal realisasiOk;
-// 	private BigDecimal realisasiOp;
-// 	private BigDecimal realisasiLk;
+exports.readExcel2 = function (request, reply) {
+
+    var db = this.db;
+
+    const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
+
+    var workbook = XLSX.readFile(fileName);
+
+    var first_sheet_name = workbook.SheetNames[5];//= 'INPUTAN';
+    console.log(first_sheet_name);
+    var worksheet = workbook.Sheets[first_sheet_name];
+
+    var result = {
+      labaSetelahPajak: [],
+      labaRugiLain: []
+    };
+
+    var year = 2017;
+
+    var colNames = ['H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+      'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR'
+    ];
+
+    var getData = function(name, row, month, year, ws){
+
+      var cellMonthPositionInit = (month-1) * 3;
+      cellMonthPositionInit += 2;
+      var cellName = colNames[cellMonthPositionInit] + row;
+      var cellValue = worksheet[cellName]? worksheet[cellName].v : 0;
+
+      var result = {
+        month: month,
+        year: year,
+        cellValue: cellValue
+      }
+
+      return result;
+    }
+
+    for(var row=8; row<150; row++){
+      var name = worksheet['C' + row]? worksheet['C' + row].v : '';
+
+      if(name == 'Laba Setelah Pajak'){
+        for(var month=1; month<=12; month++){
+          var data = getData(name, row, month, year, worksheet);
+          result.labaSetelahPajak.push(data);
+        }
+      }else if(name == 'Laba/Rugi lain-lain'){
+        for(var month=1; month<=12; month++){
+          var data = getData(name, row, month, year, worksheet);
+          result.labaRugiLain.push(data);
+        }
+      }
+    }
+
+    var insertToDb = function(tmpResult){
+      for(var i=0; i<tmpResult.labaSetelahPajak.length; i++){
+
+        var labaSetelahPajak = tmpResult.labaSetelahPajak[i];
+        var labaRugiLain = tmpResult.labaRugiLain[i];
+        var query = 'INSERT INTO monthly_data (year, month, laba_setelah_pajak, laba_rugi_lain) ' +
+        'VALUES (?, ?, ?, ?)';
+
+        db.query(query, [
+          labaSetelahPajak.year,
+          labaSetelahPajak.month,
+          labaSetelahPajak.cellValue,
+          labaRugiLain.cellValue], function(err, queryResult){
+          if(err){
+            console.log(err);
+            // res.status(500).send('Error while doing operation, Ex. non unique stambuk');
+          }else{
+
+          }
+
+        });
+      }
+
+      reply(tmpResult);
+    }
+
+    db.query(
+    'DELETE FROM monthly_data WHERE year = ?',
+    [year],
+    function (err, queryResult) {
+      if(err){
+        res.status(500).send('Error while doing operation.');
+      }else{
+        insertToDb(result);
+      }
+    });
+};

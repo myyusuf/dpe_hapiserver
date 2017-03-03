@@ -13,6 +13,11 @@ module.exports = [
     handler: ExcelReader.readExcel
   },
   {
+    method: 'GET',
+    path: '/convert2',
+    handler: ExcelReader.readExcel2
+  },
+  {
       method: 'GET',
       path: '/',
       handler: Pages.home,
