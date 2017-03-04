@@ -2384,18 +2384,18 @@
 	      var fileUpload = new _FileUpload2.default({
 	        height: 35,
 	        width: 103,
-	        uploadUrl: 'api/project_progress/upload',
+	        uploadUrl: 'project_progress/upload',
 	        fileInputName: 'progress'
 	      });
 
-	      var uploadButton = new _Button2.default({
-	        title: 'Upload',
-	        template: 'primary',
-	        height: 26,
-	        onClick: function onClick() {
-	          fileUpload.uploadFile();
-	        }
-	      });
+	      // var uploadButton = new Button({
+	      //   title:'Upload',
+	      //   template: 'primary',
+	      //   height: 26,
+	      //   onClick: function(){
+	      //     fileUpload.uploadFile();
+	      //   }
+	      // });
 
 	      var table = $('<table style="height: 100%; width: 100%; margin: -3px; "></table>');
 	      var tr = $('<tr></tr>');
@@ -2412,9 +2412,9 @@
 	      innerTd.appendTo(innerTr);
 	      fileUpload.render(innerTd);
 
-	      innerTd = $('<td style="padding-top: 6px; width: 70px; height: 100%;"></td>');
-	      innerTd.appendTo(innerTr);
-	      uploadButton.render(innerTd);
+	      // innerTd = $('<td style="padding-top: 6px; width: 70px; height: 100%;"></td>');
+	      // innerTd.appendTo(innerTr);
+	      // uploadButton.render(innerTd);
 
 	      innerTd = $('<td style="padding-top: 6px; width: 200px; height: 100%;"></td>');
 	      innerTd.appendTo(innerTr);

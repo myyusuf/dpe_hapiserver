@@ -7,16 +7,16 @@ const Assets = require('./handlers/assets');
 const ProjectProgress = require('./handlers/project_progress');
 
 module.exports = [
-  {
-    method: 'GET',
-    path: '/convert',
-    handler: ExcelReader.readExcel
-  },
-  {
-    method: 'GET',
-    path: '/convert2',
-    handler: ExcelReader.readExcel2
-  },
+  // {
+  //   method: 'GET',
+  //   path: '/convert',
+  //   handler: ExcelReader.readExcel
+  // },
+  // {
+  //   method: 'GET',
+  //   path: '/convert2',
+  //   handler: ExcelReader.readExcel2
+  // },
   {
       method: 'GET',
       path: '/',
@@ -64,7 +64,8 @@ module.exports = [
       config: {
           payload: {
               parse: true,
-              output: 'file'
+              output: 'file',
+              maxBytes: 4194304
           }
       }
   },

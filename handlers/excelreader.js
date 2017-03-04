@@ -2,14 +2,30 @@
 
 var XLSX = require('xlsx');
 
-exports.readExcel = function (request, reply) {
+exports.readExcel = function (fileName, db) {
 
-    const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
+  const year = 2017;
+
+  db.query(
+  'DELETE FROM project_progress WHERE year = ?',
+  [year],
+  function (err, queryResult) {
+    if(err){
+      res.status(500).send('Error while doing operation.');
+    }else{
+      readExcel1(fileName, db);
+    }
+  });
+}
+
+var readExcel1 = function (fileName, db) {
+
+    // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
 
     var workbook = XLSX.readFile(fileName);
 
     var first_sheet_name = workbook.SheetNames[1];//= 'INPUTAN';
-    console.log(first_sheet_name);
+    // console.log(first_sheet_name);
     var worksheet = workbook.Sheets[first_sheet_name];
 
     var result = [];
@@ -102,7 +118,7 @@ exports.readExcel = function (request, reply) {
       'realisasi_ok, realisasi_op, realisasi_lk, prognosa_ok, prognosa_op, prognosa_lk) ' +
       'SELECT id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? FROM project WHERE code = ? ';
 
-      this.db.query(query, [
+      db.query(query, [
         year,
         month,
         rkapOk,
@@ -125,14 +141,13 @@ exports.readExcel = function (request, reply) {
       });
     }
 
-    reply(result);
+    readExcel2(fileName, db);
+
 };
 
-exports.readExcel2 = function (request, reply) {
+var readExcel2 = function (fileName, db) {
 
-    var db = this.db;
-
-    const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
+    // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
 
     var workbook = XLSX.readFile(fileName);
 
@@ -205,8 +220,6 @@ exports.readExcel2 = function (request, reply) {
 
         });
       }
-
-      reply(tmpResult);
     }
 
     db.query(
