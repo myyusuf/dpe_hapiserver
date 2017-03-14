@@ -218,6 +218,16 @@ exports.getDashboardData = function(request, reply) {
     // result.data4.ok = mainData.sum_prognosa_ok - mainData.sum_realisasi_ok;
     // result.data4.op = mainData.sum_prognosa_op - mainData.sum_realisasi_op;
     // result.data4.lk = mainData.sum_prognosa_lk - mainData.sum_realisasi_lk;
+
+    result.data5.ok = (totalProyekLamaNonJO.sum_rkap_ok + totalProyekLamaJO.sum_rkap_ok) -
+    (totalProyekLamaNonJO.sum_realisasi_ok + totalProyekLamaJO.sum_realisasi_ok);
+
+    result.data5.op = (totalProyekLamaNonJO.sum_rkap_op + totalProyekLamaJO.sum_rkap_op) -
+    (totalProyekLamaNonJO.sum_realisasi_op + totalProyekLamaJO.sum_realisasi_op);
+
+    result.data5.lk = (totalProyekLamaNonJO.sum_rkap_lk + totalProyekLamaJO.sum_rkap_lk) -
+    (totalProyekLamaNonJO.sum_realisasi_lk + totalProyekLamaJO.sum_realisasi_lk);
+    
     reply(result);
   });
 
