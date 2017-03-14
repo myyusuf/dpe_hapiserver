@@ -53,7 +53,7 @@ exports.getDashboardData = function(request, reply) {
           lsp: 0,
           lk: 0
       },
-      data: {
+      data7: {
           title: "OK Baru (B2)",
           ok: 0,
           op: 0,
@@ -221,13 +221,25 @@ exports.getDashboardData = function(request, reply) {
 
     result.data5.ok = (totalProyekLamaNonJO.sum_rkap_ok + totalProyekLamaJO.sum_rkap_ok) -
     (totalProyekLamaNonJO.sum_realisasi_ok + totalProyekLamaJO.sum_realisasi_ok);
-
     result.data5.op = (totalProyekLamaNonJO.sum_rkap_op + totalProyekLamaJO.sum_rkap_op) -
     (totalProyekLamaNonJO.sum_realisasi_op + totalProyekLamaJO.sum_realisasi_op);
-
     result.data5.lk = (totalProyekLamaNonJO.sum_rkap_lk + totalProyekLamaJO.sum_rkap_lk) -
     (totalProyekLamaNonJO.sum_realisasi_lk + totalProyekLamaJO.sum_realisasi_lk);
-    
+
+    result.data6.ok = (totalProyekBaruDiperolehNonJO.sum_rkap_ok + totalProyekBaruDiperolehJO.sum_rkap_ok) -
+    (totalProyekBaruDiperolehNonJO.sum_realisasi_ok + totalProyekBaruDiperolehJO.sum_realisasi_ok);
+    result.data6.op = (totalProyekBaruDiperolehNonJO.sum_rkap_op + totalProyekBaruDiperolehJO.sum_rkap_op) -
+    (totalProyekBaruDiperolehNonJO.sum_realisasi_op + totalProyekBaruDiperolehJO.sum_realisasi_op);
+    result.data6.lk = (totalProyekBaruDiperolehNonJO.sum_rkap_lk + totalProyekBaruDiperolehJO.sum_rkap_lk) -
+    (totalProyekBaruDiperolehNonJO.sum_realisasi_lk + totalProyekBaruDiperolehJO.sum_realisasi_lk);
+
+    result.data7.ok = (totalProyekBaruPengusahaanNonJO.sum_rkap_ok + totalProyekBaruPengusahaanJO.sum_rkap_ok) -
+    (totalProyekBaruPengusahaanNonJO.sum_realisasi_ok + totalProyekBaruPengusahaanJO.sum_realisasi_ok);
+    result.data7.op = (totalProyekBaruPengusahaanNonJO.sum_rkap_op + totalProyekBaruPengusahaanJO.sum_rkap_op) -
+    (totalProyekBaruPengusahaanNonJO.sum_realisasi_op + totalProyekBaruPengusahaanJO.sum_realisasi_op);
+    result.data7.lk = (totalProyekBaruPengusahaanNonJO.sum_rkap_lk + totalProyekBaruPengusahaanJO.sum_rkap_lk) -
+    (totalProyekBaruPengusahaanNonJO.sum_realisasi_lk + totalProyekBaruPengusahaanJO.sum_realisasi_lk);
+
     reply(result);
   });
 
