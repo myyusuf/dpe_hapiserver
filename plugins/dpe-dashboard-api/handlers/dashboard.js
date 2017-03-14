@@ -248,221 +248,64 @@ exports.getDashboardData = function(request, reply) {
 
 exports.dashboardOk = function(request, reply) {
 
-    var result = [{
-            "month": "Jan",
-            "plan": 16.99,
-            "actual": 52.727
-        },
-        {
-            "month": "Feb",
-            "plan": 336.515,
-            "actual": 270.909
-        },
-        {
-            "month": "Mar",
-            "plan": 1650.662,
-            "actual": 1614.947
-        },
-        {
-            "month": "Apr",
-            "plan": 1893.504,
-            "actual": 2087.302
-        },
-        {
-            "month": "Mei",
-            "plan": 1913.385,
-            "actual": 2315.823
-        },
-        {
-            "month": "Jun",
-            "plan": 1932.368,
-            "actual": 2417.732
-        },
-        {
-            "month": "Jul",
-            "plan": 2251.404,
-            "actual": 2417.732
-        },
-        {
-            "month": "Ags",
-            "plan": 2447.976,
-            "actual": 3180.081
-        },
-        {
-            "month": "Sep",
-            "plan": 2469.952,
-            "actual": 3193.046
-        },
-        {
-            "month": "Okt",
-            "plan": 2515.469,
-            "actual": 3200.158
-        },
-        {
-            "month": "Nov",
-            "plan": 2547.981,
-            "actual": 3567.663
-        },
-        {
-            "month": "Des",
-            "plan": 2600,
-            "actual": null
-        }
-    ]
+  var year = request.params.year;
 
-    // reply(result);
+  var result = [];
+  DashboardChart.getChartData(this.db, year, function(chartDataList){
 
-    var year = request.params.year;
-
-    var result = [];
-    DashboardChart.getChartData(this.db, year, function(chartDataList){
-
-      for(var i=0; i<chartDataList.length; i++){
-        var chartData = chartDataList[i];
-        var okData = {
-          month: MONHTS[chartData.month - 1],
-          plan: chartData.sum_rkap_ok,
-          actual: chartData.sum_realisasi_ok
-        }
-        result.push(okData);
+    for(var i=0; i<chartDataList.length; i++){
+      var chartData = chartDataList[i];
+      var okData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.sum_rkap_ok,
+        actual: chartData.sum_realisasi_ok
       }
-      reply(result);
-    });
+      result.push(okData);
+    }
+    reply(result);
+  });
 
 };
 
 exports.dashboardOp = function(request, reply) {
 
-    var result = [{
-            "month": "Jan",
-            "plan": 16.99,
-            "actual": 52.727
-        },
-        {
-            "month": "Feb",
-            "plan": 336.515,
-            "actual": 270.909
-        },
-        {
-            "month": "Mar",
-            "plan": 1650.662,
-            "actual": 1614.947
-        },
-        {
-            "month": "Apr",
-            "plan": 1893.504,
-            "actual": 2087.302
-        },
-        {
-            "month": "Mei",
-            "plan": 1913.385,
-            "actual": 2315.823
-        },
-        {
-            "month": "Jun",
-            "plan": 1932.368,
-            "actual": 2417.732
-        },
-        {
-            "month": "Jul",
-            "plan": 2251.404,
-            "actual": 2417.732
-        },
-        {
-            "month": "Ags",
-            "plan": 2447.976,
-            "actual": 3180.081
-        },
-        {
-            "month": "Sep",
-            "plan": 2469.952,
-            "actual": 3193.046
-        },
-        {
-            "month": "Okt",
-            "plan": 2515.469,
-            "actual": 3200.158
-        },
-        {
-            "month": "Nov",
-            "plan": 2547.981,
-            "actual": 3567.663
-        },
-        {
-            "month": "Des",
-            "plan": 2600,
-            "actual": null
-        }
-    ]
+  var year = request.params.year;
 
+  var result = [];
+  DashboardChart.getChartData(this.db, year, function(chartDataList){
+
+    for(var i=0; i<chartDataList.length; i++){
+      var chartData = chartDataList[i];
+      var opData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.sum_rkap_op,
+        actual: chartData.sum_realisasi_op
+      }
+      result.push(opData);
+    }
     reply(result);
+  });
+
 };
 
 exports.dashboardLk = function(request, reply) {
 
-    var result = [{
-            "month": "Jan",
-            "plan": 16.99,
-            "actual": 52.727
-        },
-        {
-            "month": "Feb",
-            "plan": 336.515,
-            "actual": 270.909
-        },
-        {
-            "month": "Mar",
-            "plan": 1650.662,
-            "actual": 1614.947
-        },
-        {
-            "month": "Apr",
-            "plan": 1893.504,
-            "actual": 2087.302
-        },
-        {
-            "month": "Mei",
-            "plan": 1913.385,
-            "actual": 2315.823
-        },
-        {
-            "month": "Jun",
-            "plan": 1932.368,
-            "actual": 2417.732
-        },
-        {
-            "month": "Jul",
-            "plan": 2251.404,
-            "actual": 2417.732
-        },
-        {
-            "month": "Ags",
-            "plan": 2447.976,
-            "actual": 3180.081
-        },
-        {
-            "month": "Sep",
-            "plan": 2469.952,
-            "actual": 3193.046
-        },
-        {
-            "month": "Okt",
-            "plan": 2515.469,
-            "actual": 3200.158
-        },
-        {
-            "month": "Nov",
-            "plan": 2547.981,
-            "actual": 3567.663
-        },
-        {
-            "month": "Des",
-            "plan": 2600,
-            "actual": null
-        }
-    ]
+  var year = request.params.year;
 
+  var result = [];
+  DashboardChart.getChartData(this.db, year, function(chartDataList){
+
+    for(var i=0; i<chartDataList.length; i++){
+      var chartData = chartDataList[i];
+      var lkData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.sum_rkap_lk,
+        actual: chartData.sum_realisasi_lk
+      }
+      result.push(lkData);
+    }
     reply(result);
+  });
 };
 
 exports.dashboardLsp = function(request, reply) {

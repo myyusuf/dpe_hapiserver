@@ -27,22 +27,22 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/dashboard/ok/{year}',
+    path: '/api/dashboard/ok/{year}',
     handler: Dashboard.dashboardOk
   },
   {
     method: 'GET',
-    path: '/dashboard/op/{year}',
+    path: '/api/dashboard/op/{year}',
     handler: Dashboard.dashboardOp
   },
   {
     method: 'GET',
-    path: '/dashboard/lk/{year}',
+    path: '/api/dashboard/lk/{year}',
     handler: Dashboard.dashboardLk
   },
   {
     method: 'GET',
-    path: '/dashboard/lsp/{year}',
+    path: '/api/dashboard/lsp/{year}',
     handler: Dashboard.dashboardLsp
   },
   {
