@@ -40,28 +40,28 @@ exports.getDashboardData = function(request, reply) {
           lk: 0
       },
       data5: {
-          title: "OK Lama (A)",
+          title: "OK Lama",
           ok: 0,
           op: 0,
           lsp: 0,
           lk: 0
       },
       data6: {
-          title: "OK Baru (B1)",
+          title: "OK Baru (Sudah Didapat)",
           ok: 0,
           op: 0,
           lsp: 0,
           lk: 0
       },
       data7: {
-          title: "OK Baru (B2)",
+          title: "OK Baru (Dalam Pengusahaan)",
           ok: 0,
           op: 0,
           lsp: 0,
           lk: 0
       },
       data8: {
-          title: "Claim (C)",
+          title: "Lain Lain",
           ok: 0,
           op: 0,
           lsp: 0,
