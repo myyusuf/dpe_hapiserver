@@ -246,6 +246,52 @@ exports.getDashboardData = function(request, reply) {
 
 };
 
+
+exports.allCharts = function(request, reply) {
+
+  var year = request.params.year;
+
+  var result = {
+    okData: [],
+    opData: [],
+    lkData: [],
+    lspData: []
+  };
+
+  DashboardChart.getChartData(this.db, year, function(chartDataList){
+
+    for(var i=0; i<chartDataList.length; i++){
+      var chartData = chartDataList[i];
+
+      var okData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.sum_rkap_ok,
+        actual: chartData.sum_realisasi_ok
+      }
+
+      var opData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.sum_rkap_op,
+        actual: chartData.sum_realisasi_op
+      }
+
+      var lkData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.sum_rkap_lk,
+        actual: chartData.sum_realisasi_lk
+      }
+
+      result.okData.push(okData);
+      result.opData.push(opData);
+      result.lkData.push(lkData);
+      // result.lspData.push(lspData);
+
+    }
+    reply(result);
+  });
+
+};
+
 exports.dashboardOk = function(request, reply) {
 
   var year = request.params.year;

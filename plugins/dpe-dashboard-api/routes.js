@@ -27,6 +27,11 @@ module.exports = [
   },
   {
     method: 'GET',
+    path: '/api/dashboard/charts/{year}',
+    handler: Dashboard.allCharts
+  },
+  {
+    method: 'GET',
     path: '/api/dashboard/ok/{year}',
     handler: Dashboard.dashboardOk
   },
