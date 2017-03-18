@@ -81,8 +81,8 @@ module.exports = [
       handler: AdminUsers.find,
       config: {
           auth: {
-            strategy: 'api',
-            scope: ['admin']
+            strategy: 'session',
+            scope: ['adminweb']
           }
       }
   },

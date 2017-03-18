@@ -27,7 +27,7 @@ exports.find = function(request, reply) {
   var db = this.db;
 
   var query = "SELECT * FROM users WHERE (username LIKE ? or name LIKE ?) " +
-  "ORDER BY code LIMIT ?,? ";
+  "ORDER BY username LIMIT ?,? ";
   var pagesize = parseInt(request.query.pagesize);
   var pagenum = parseInt(request.query.pagenum);
   var username = request.query.searchTxt + '%';
@@ -38,7 +38,7 @@ exports.find = function(request, reply) {
     function(err, rows) {
       if (err) throw err;
 
-      var query = "SELECT count(1) as totalRecords FROM project WHERE (username LIKE ? or name LIKE ?) ";
+      var query = "SELECT count(1) as totalRecords FROM users WHERE (username LIKE ? or name LIKE ?) ";
       db.query(
         query, [username, name],
         function(err, rows2) {
