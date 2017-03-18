@@ -19,7 +19,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/api/dashboard',
+    path: '/api/dashboard/{year}/{month}',
     config: {
         auth: {
           strategy: 'api'

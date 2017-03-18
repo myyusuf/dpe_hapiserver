@@ -7,8 +7,8 @@ const MONHTS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "
 
 exports.getDashboardData = function(request, reply) {
 
-  var month = 2;
-  var year = 2017;
+  var year = request.params.year;
+  var month = request.params.month;
 
   var result = {
       data1: {

@@ -18,9 +18,8 @@ exports.getMainData = function(db, month, year, resultCallback) {
 
   "FROM project_progress pp " +
   "LEFT JOIN project p ON pp.project_id = p.id " +
-  "GROUP BY p.project_type "
-  "WHERE pp.month <= ? AND pp.year = ? ";
-  var ok = 0;
+  "WHERE pp.month <= ? AND pp.year = ? " +
+  "GROUP BY p.project_type ";
 
   db.query(
     query, [month, year],
