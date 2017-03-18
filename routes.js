@@ -5,6 +5,7 @@ const Pages = require('./handlers/pages');
 const Actions = require('./handlers/actions');
 const Assets = require('./handlers/assets');
 const ProjectProgress = require('./handlers/project_progress');
+const AdminUsers = require('./handlers/admin_users');
 
 module.exports = [
   // {
@@ -68,6 +69,32 @@ module.exports = [
               maxBytes: 4194304
           }
       }
+  },
+  {
+      method: 'POST',
+      path: '/adminusers',
+      handler: AdminUsers.create
+  },
+  {
+      method: 'GET',
+      path: '/adminusers',
+      handler: AdminUsers.find,
+      config: {
+          auth: {
+            strategy: 'api',
+            scope: ['admin']
+          }
+      }
+  },
+  {
+      method: 'PUT',
+      path: '/adminusers/{username}',
+      handler: AdminUsers.update
+  },
+  {
+      method: 'DELETE',
+      path: '/adminusers/{username}',
+      handler: AdminUsers.delete
   },
   {
       method: 'GET',
