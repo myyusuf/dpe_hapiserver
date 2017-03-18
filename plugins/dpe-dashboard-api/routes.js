@@ -20,15 +20,22 @@ module.exports = [
   {
     method: 'GET',
     path: '/api/dashboard',
-    // config: {
-    //     auth: 'simple',
-    // },
+    config: {
+        auth: {
+          strategy: 'api'
+        }
+    },
     handler: Dashboard.getDashboardData
   },
   {
     method: 'GET',
     path: '/api/dashboard/charts/{year}',
-    handler: Dashboard.allCharts
+    handler: Dashboard.allCharts,
+    config: {
+        auth: {
+          strategy: 'api'
+        }
+    }
   },
   {
     method: 'GET',
