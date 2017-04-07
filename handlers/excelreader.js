@@ -80,11 +80,15 @@ var readExcel1 = function (fileName, db) {
       return projectProgress;
     }
 
-    for(var row=11; row<17; row++){
+    for(var row=11; row<500; row++){
       var projectCode = worksheet['C' + row]? worksheet['C' + row].v : '';
 
       if(projectCode != ''){
 
+        if(projectCode == 'END'){
+          break;
+        }
+        
         projectCode = projectCode.trim();
 
         for(var month=1; month<=12; month++){
