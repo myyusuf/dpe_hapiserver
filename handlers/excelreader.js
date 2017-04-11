@@ -24,7 +24,7 @@ var readExcel1 = function (fileName, db) {
 
     var workbook = XLSX.readFile(fileName);
 
-    var first_sheet_name = workbook.SheetNames[1];//= 'INPUTAN';
+    var first_sheet_name = workbook.SheetNames[0];//= 'INPUTAN';
     // console.log(first_sheet_name);
     var worksheet = workbook.Sheets[first_sheet_name];
 
@@ -155,7 +155,7 @@ var readExcel2 = function (fileName, db) {
 
     var workbook = XLSX.readFile(fileName);
 
-    var first_sheet_name = workbook.SheetNames[5];//= 'INPUTAN';
+    var first_sheet_name = workbook.SheetNames[1];//= 'Lap';
     console.log(first_sheet_name);
     var worksheet = workbook.Sheets[first_sheet_name];
 

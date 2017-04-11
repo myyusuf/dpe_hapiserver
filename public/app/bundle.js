@@ -1992,7 +1992,7 @@
 
 	    var codeTextBox = new _TextBox2.default({ value: project.code, disabled: true, height: 25, width: '90%' });
 	    var nameTextBox = new _TextBox2.default({ value: project.name, height: 25, width: '90%' });
-	    var projectTypeComboBox = new _ProjectTypeComboBox2.default({ value: project.projectType, height: 80, width: '92.5%' });
+	    var projectTypeComboBox = new _ProjectTypeComboBox2.default({ value: project.project_type, height: 80, width: '92.5%' });
 	    var descriptionTextBox = new _TextArea2.default({ value: project.description, height: 80, width: '92.5%' });
 
 	    var formItems = [{
