@@ -88,7 +88,7 @@ var readExcel1 = function (fileName, db) {
         if(projectCode == 'END'){
           break;
         }
-        
+
         projectCode = projectCode.trim();
 
         for(var month=1; month<=12; month++){
@@ -177,6 +177,8 @@ var readExcel2 = function (fileName, db) {
       var cellName = colNames[cellMonthPositionInit] + row;
       var cellValue = worksheet[cellName]? worksheet[cellName].v : 0;
 
+      console.log('cellName : ' + '"' + cellName + '"' + ", value : " + JSON.stringify(worksheet[cellName]));
+
       var result = {
         month: month,
         year: year,
@@ -190,11 +192,13 @@ var readExcel2 = function (fileName, db) {
       var name = worksheet['C' + row]? worksheet['C' + row].v : '';
 
       if(name == 'Laba Setelah Pajak'){
+        console.log('name : ' + '"' + name + '"');
         for(var month=1; month<=12; month++){
           var data = getData(name, row, month, year, worksheet);
           result.labaSetelahPajak.push(data);
         }
-      }else if(name == 'Laba/Rugi lain-lain'){
+      }else if(name == 'Laba/Rugi Lain-Lain'){
+        console.log('name : ' + '"' + name + '"');
         for(var month=1; month<=12; month++){
           var data = getData(name, row, month, year, worksheet);
           result.labaRugiLain.push(data);
@@ -219,7 +223,7 @@ var readExcel2 = function (fileName, db) {
             console.log(err);
             // res.status(500).send('Error while doing operation, Ex. non unique stambuk');
           }else{
-
+            // console.log('insert labaRugiLain success : ' + JSON.stringify(queryResult));
           }
 
         });

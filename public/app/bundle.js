@@ -1084,6 +1084,8 @@
 	          projectTypeDescription = "Proyek Baru Dalam Pengusahaan Non JO/Non KSO";
 	        } else if (value == 6) {
 	          projectTypeDescription = "Proyek Baru Dalam Pengusahaan JO/KSO";
+	        } else if (value == 7) {
+	          projectTypeDescription = "Proyek Baru Dalam Pengusahaan Intern";
 	        }
 
 	        return '<span style="margin: 4px; float: ' + columnproperties.cellsalign + ';">' + projectTypeDescription + '</span>';
@@ -1886,7 +1888,7 @@
 
 	    this.id = (0, _Utils.guid)();
 
-	    var typeList = [{ id: '1', nama: "Proyek Lama Non JO/Non KSO" }, { id: '2', nama: "Proyek Lama JO/KSO" }, { id: '3', nama: "Proyek Baru Sudah Diperoleh Non JO/Non KSO" }, { id: '4', nama: "Proyek Baru Sudah Diperoleh JO/KSO" }, { id: '5', nama: "Proyek Baru Dalam Pengusahaan Non JO/Non KSO" }, { id: '6', nama: "Proyek Baru Dalam Pengusahaan JO/KSO" }];
+	    var typeList = [{ id: '1', nama: "Proyek Lama Non JO/Non KSO" }, { id: '2', nama: "Proyek Lama JO/KSO" }, { id: '3', nama: "Proyek Baru Sudah Diperoleh Non JO/Non KSO" }, { id: '4', nama: "Proyek Baru Sudah Diperoleh JO/KSO" }, { id: '5', nama: "Proyek Baru Dalam Pengusahaan Non JO/Non KSO" }, { id: '6', nama: "Proyek Baru Dalam Pengusahaan JO/KSO" }, { id: '7', nama: "Proyek Baru Dalam Pengusahaan Intern" }];
 	    var comboBoxOptions = {
 	      displayMember: "nama",
 	      valueMember: "id",
@@ -2570,7 +2572,7 @@
 
 	var _AddUserWindow2 = _interopRequireDefault(_AddUserWindow);
 
-	var _EditUserWindow = __webpack_require__(27);
+	var _EditUserWindow = __webpack_require__(28);
 
 	var _EditUserWindow2 = _interopRequireDefault(_EditUserWindow);
 
@@ -2734,7 +2736,7 @@
 
 	var _Label2 = _interopRequireDefault(_Label);
 
-	var _PasswordInput = __webpack_require__(28);
+	var _PasswordInput = __webpack_require__(27);
 
 	var _PasswordInput2 = _interopRequireDefault(_PasswordInput);
 
@@ -2849,6 +2851,93 @@
 
 /***/ },
 /* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _Utils = __webpack_require__(3);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var PasswordInput = function () {
+	  function PasswordInput(options) {
+	    _classCallCheck(this, PasswordInput);
+
+	    this.id = (0, _Utils.guid)();
+
+	    if (options.width) {
+	      this.width = options.width;
+	    }
+
+	    if (options.height) {
+	      this.height = options.height;
+	    }
+
+	    this.placeHolder = options.placeHolder;
+
+	    this.disabled = options.disabled;
+	  }
+
+	  _createClass(PasswordInput, [{
+	    key: 'render',
+	    value: function render(container) {
+	      var textBoxContainer = $('<input type="password" />');
+	      textBoxContainer.attr('id', this.id);
+	      textBoxContainer.appendTo(container);
+
+	      var textBoxOptions = {
+	        theme: 'metro'
+	      };
+
+	      if (this.width) {
+	        textBoxOptions['width'] = this.width;
+	      }
+
+	      if (this.height) {
+	        textBoxOptions['height'] = this.height;
+	      }
+
+	      if (this.placeHolder) {
+	        textBoxOptions['placeHolder'] = this.placeHolder;
+	      }
+
+	      if (this.disabled) {
+	        textBoxOptions['disabled'] = this.disabled;
+	      }
+
+	      textBoxContainer.jqxPasswordInput(textBoxOptions);
+
+	      if (this.initialValue) {
+	        textBoxContainer.val(this.initialValue);
+	      }
+
+	      this.component = textBoxContainer;
+	    }
+	  }, {
+	    key: 'getId',
+	    value: function getId() {
+	      return this.id;
+	    }
+	  }, {
+	    key: 'getValue',
+	    value: function getValue() {
+	      return this.component.val();
+	    }
+	  }]);
+
+	  return PasswordInput;
+	}();
+
+	exports.default = PasswordInput;
+
+/***/ },
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3000,93 +3089,6 @@
 	}();
 
 	exports.default = EditUserWindow;
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _Utils = __webpack_require__(3);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var PasswordInput = function () {
-	  function PasswordInput(options) {
-	    _classCallCheck(this, PasswordInput);
-
-	    this.id = (0, _Utils.guid)();
-
-	    if (options.width) {
-	      this.width = options.width;
-	    }
-
-	    if (options.height) {
-	      this.height = options.height;
-	    }
-
-	    this.placeHolder = options.placeHolder;
-
-	    this.disabled = options.disabled;
-	  }
-
-	  _createClass(PasswordInput, [{
-	    key: 'render',
-	    value: function render(container) {
-	      var textBoxContainer = $('<input type="password" />');
-	      textBoxContainer.attr('id', this.id);
-	      textBoxContainer.appendTo(container);
-
-	      var textBoxOptions = {
-	        theme: 'metro'
-	      };
-
-	      if (this.width) {
-	        textBoxOptions['width'] = this.width;
-	      }
-
-	      if (this.height) {
-	        textBoxOptions['height'] = this.height;
-	      }
-
-	      if (this.placeHolder) {
-	        textBoxOptions['placeHolder'] = this.placeHolder;
-	      }
-
-	      if (this.disabled) {
-	        textBoxOptions['disabled'] = this.disabled;
-	      }
-
-	      textBoxContainer.jqxPasswordInput(textBoxOptions);
-
-	      if (this.initialValue) {
-	        textBoxContainer.val(this.initialValue);
-	      }
-
-	      this.component = textBoxContainer;
-	    }
-	  }, {
-	    key: 'getId',
-	    value: function getId() {
-	      return this.id;
-	    }
-	  }, {
-	    key: 'getValue',
-	    value: function getValue() {
-	      return this.component.val();
-	    }
-	  }]);
-
-	  return PasswordInput;
-	}();
-
-	exports.default = PasswordInput;
 
 /***/ }
 /******/ ]);
