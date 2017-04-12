@@ -69,7 +69,7 @@ exports.getDashboardData = function(request, reply) {
       }
   };
 
-  DashboardMain.getMainData(this.db, month, year, function(list){
+  DashboardMain.getMainData(this.db, month, year, function(list, rkapPrognosa, lsp){
 
     // {id: '1', nama: "Proyek Lama Non JO/Non KSO"},
     // {id: '2', nama: "Proyek Lama JO/KSO"},
@@ -153,29 +153,33 @@ exports.getDashboardData = function(request, reply) {
 
     }
 
-    result.data1.ok = totalProyekLamaNonJO.sum_rkap_ok +
-                      totalProyekLamaJO.sum_rkap_ok +
-                      totalProyekBaruDiperolehNonJO.sum_rkap_ok +
-                      totalProyekBaruDiperolehJO.sum_rkap_ok +
-                      totalProyekBaruPengusahaanNonJO.sum_rkap_ok +
-                      totalProyekBaruPengusahaanJO.sum_rkap_ok +
-                      totalProyekBaruPengusahaanIntern.sum_rkap_ok;
+    // result.data1.ok = totalProyekLamaNonJO.sum_rkap_ok +
+    //                   totalProyekLamaJO.sum_rkap_ok +
+    //                   totalProyekBaruDiperolehNonJO.sum_rkap_ok +
+    //                   totalProyekBaruDiperolehJO.sum_rkap_ok +
+    //                   totalProyekBaruPengusahaanNonJO.sum_rkap_ok +
+    //                   totalProyekBaruPengusahaanJO.sum_rkap_ok +
+    //                   totalProyekBaruPengusahaanIntern.sum_rkap_ok;
+    //
+    // result.data1.op = totalProyekLamaNonJO.sum_rkap_op +
+    //                   totalProyekLamaJO.sum_rkap_op +
+    //                   totalProyekBaruDiperolehNonJO.sum_rkap_op +
+    //                   totalProyekBaruDiperolehJO.sum_rkap_op +
+    //                   totalProyekBaruPengusahaanNonJO.sum_rkap_op +
+    //                   totalProyekBaruPengusahaanJO.sum_rkap_op +
+    //                   totalProyekBaruPengusahaanIntern.sum_rkap_op;
+    //
+    // result.data1.lk = totalProyekLamaNonJO.sum_rkap_lk +
+    //                   totalProyekLamaJO.sum_rkap_lk +
+    //                   totalProyekBaruDiperolehNonJO.sum_rkap_lk +
+    //                   totalProyekBaruDiperolehJO.sum_rkap_lk +
+    //                   totalProyekBaruPengusahaanNonJO.sum_rkap_lk +
+    //                   totalProyekBaruPengusahaanJO.sum_rkap_lk +
+    //                   totalProyekBaruPengusahaanIntern.sum_rkap_lk;
 
-    result.data1.op = totalProyekLamaNonJO.sum_rkap_op +
-                      totalProyekLamaJO.sum_rkap_op +
-                      totalProyekBaruDiperolehNonJO.sum_rkap_op +
-                      totalProyekBaruDiperolehJO.sum_rkap_op +
-                      totalProyekBaruPengusahaanNonJO.sum_rkap_op +
-                      totalProyekBaruPengusahaanJO.sum_rkap_op +
-                      totalProyekBaruPengusahaanIntern.sum_rkap_op;
-
-    result.data1.lk = totalProyekLamaNonJO.sum_rkap_lk +
-                      totalProyekLamaJO.sum_rkap_lk +
-                      totalProyekBaruDiperolehNonJO.sum_rkap_lk +
-                      totalProyekBaruDiperolehJO.sum_rkap_lk +
-                      totalProyekBaruPengusahaanNonJO.sum_rkap_lk +
-                      totalProyekBaruPengusahaanJO.sum_rkap_lk +
-                      totalProyekBaruPengusahaanIntern.sum_rkap_lk;
+    result.data1.ok = rkapPrognosa.sum_rkap_ok;
+    result.data1.op = rkapPrognosa.sum_rkap_op;
+    result.data1.lsp = lsp.sum_lsp_rkap;
 
     result.data2.ok = totalProyekLamaNonJO.sum_realisasi_ok +
                       totalProyekLamaJO.sum_realisasi_ok +
@@ -202,29 +206,33 @@ exports.getDashboardData = function(request, reply) {
                       totalProyekBaruPengusahaanIntern.sum_realisasi_lk;
 
 
-    result.data3.ok = totalProyekLamaNonJO.sum_prognosa_ok +
-                      totalProyekLamaJO.sum_prognosa_ok +
-                      totalProyekBaruDiperolehNonJO.sum_prognosa_ok +
-                      totalProyekBaruDiperolehJO.sum_prognosa_ok +
-                      totalProyekBaruPengusahaanNonJO.sum_prognosa_ok +
-                      totalProyekBaruPengusahaanJO.sum_prognosa_ok +
-                      totalProyekBaruPengusahaanIntern.sum_prognosa_ok;
+    // result.data3.ok = totalProyekLamaNonJO.sum_prognosa_ok +
+    //                   totalProyekLamaJO.sum_prognosa_ok +
+    //                   totalProyekBaruDiperolehNonJO.sum_prognosa_ok +
+    //                   totalProyekBaruDiperolehJO.sum_prognosa_ok +
+    //                   totalProyekBaruPengusahaanNonJO.sum_prognosa_ok +
+    //                   totalProyekBaruPengusahaanJO.sum_prognosa_ok +
+    //                   totalProyekBaruPengusahaanIntern.sum_prognosa_ok;
+    //
+    // result.data3.op = totalProyekLamaNonJO.sum_prognosa_op +
+    //                   totalProyekLamaJO.sum_prognosa_op +
+    //                   totalProyekBaruDiperolehNonJO.sum_prognosa_op +
+    //                   totalProyekBaruDiperolehJO.sum_prognosa_op +
+    //                   totalProyekBaruPengusahaanNonJO.sum_prognosa_op +
+    //                   totalProyekBaruPengusahaanJO.sum_prognosa_op +
+    //                   totalProyekBaruPengusahaanIntern.sum_prognosa_op;
+    //
+    // result.data3.lk = totalProyekLamaNonJO.sum_prognosa_lk +
+    //                   totalProyekLamaJO.sum_prognosa_lk +
+    //                   totalProyekBaruDiperolehNonJO.sum_prognosa_lk +
+    //                   totalProyekBaruDiperolehJO.sum_prognosa_lk +
+    //                   totalProyekBaruPengusahaanNonJO.sum_prognosa_lk +
+    //                   totalProyekBaruPengusahaanJO.sum_prognosa_lk +
+    //                   totalProyekBaruPengusahaanIntern.sum_prognosa_lk;
 
-    result.data3.op = totalProyekLamaNonJO.sum_prognosa_op +
-                      totalProyekLamaJO.sum_prognosa_op +
-                      totalProyekBaruDiperolehNonJO.sum_prognosa_op +
-                      totalProyekBaruDiperolehJO.sum_prognosa_op +
-                      totalProyekBaruPengusahaanNonJO.sum_prognosa_op +
-                      totalProyekBaruPengusahaanJO.sum_prognosa_op +
-                      totalProyekBaruPengusahaanIntern.sum_prognosa_op;
-
-    result.data3.lk = totalProyekLamaNonJO.sum_prognosa_lk +
-                      totalProyekLamaJO.sum_prognosa_lk +
-                      totalProyekBaruDiperolehNonJO.sum_prognosa_lk +
-                      totalProyekBaruDiperolehJO.sum_prognosa_lk +
-                      totalProyekBaruPengusahaanNonJO.sum_prognosa_lk +
-                      totalProyekBaruPengusahaanJO.sum_prognosa_lk +
-                      totalProyekBaruPengusahaanIntern.sum_prognosa_lk;
+    result.data3.ok = rkapPrognosa.sum_prognosa_ok;
+    result.data3.op = rkapPrognosa.sum_prognosa_op;
+    result.data3.lsp = lsp.sum_lsp_prognosa;
 
     result.data4.ok = result.data3.ok - result.data2.ok;
     result.data4.op = result.data3.op - result.data2.op;

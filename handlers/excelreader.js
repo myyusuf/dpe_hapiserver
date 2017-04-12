@@ -145,7 +145,7 @@ var readExcel1 = function (fileName, db) {
       });
     }
 
-    readExcel2(fileName, db);
+    readExcel3(fileName, db);
 
 };
 
@@ -238,6 +238,171 @@ var readExcel2 = function (fileName, db) {
         res.status(500).send('Error while doing operation.');
       }else{
         insertToDb(result);
+      }
+    });
+};
+
+var readExcel3 = function (fileName, db) {
+
+    // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
+
+    var workbook = XLSX.readFile(fileName);
+
+    var first_sheet_name = workbook.SheetNames[1];//= 'Lap';
+    var worksheet = workbook.Sheets[first_sheet_name];
+
+    var labaSetelahPajak = [];
+
+    var year = 2017;
+
+    var getData = function(cellName, ws){
+
+      return ws[cellName]? ws[cellName].v : 0;
+    }
+
+    for(var row=8; row<150; row++){
+      var name = worksheet['C' + row]? worksheet['C' + row].v : '';
+
+      if(name == 'Laba Setelah Pajak'){
+
+        console.log('Insert lsp');
+
+        labaSetelahPajak.push({
+          month: 1,
+          year: year,
+          lsp_rkap: getData(('J' + row), worksheet),
+          lsp_prognosa: getData(('M' + row), worksheet),
+          lsp_realisasi: getData(('P' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 2,
+          year: year,
+          lsp_rkap: getData(('S' + row), worksheet),
+          lsp_prognosa: getData(('V' + row), worksheet),
+          lsp_realisasi: getData(('Y' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 3,
+          year: year,
+          lsp_rkap: getData(('AB' + row), worksheet),
+          lsp_prognosa: getData(('AE' + row), worksheet),
+          lsp_realisasi: getData(('AH' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 4,
+          year: year,
+          lsp_rkap: getData(('AK' + row), worksheet),
+          lsp_prognosa: getData(('AN' + row), worksheet),
+          lsp_realisasi: getData(('AQ' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 5,
+          year: year,
+          lsp_rkap: getData(('AT' + row), worksheet),
+          lsp_prognosa: getData(('AW' + row), worksheet),
+          lsp_realisasi: getData(('AZ' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 6,
+          year: year,
+          lsp_rkap: getData(('BC' + row), worksheet),
+          lsp_prognosa: getData(('BF' + row), worksheet),
+          lsp_realisasi: getData(('BI' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 7,
+          year: year,
+          lsp_rkap: getData(('BL' + row), worksheet),
+          lsp_prognosa: getData(('BO' + row), worksheet),
+          lsp_realisasi: getData(('BR' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 8,
+          year: year,
+          lsp_rkap: getData(('BU' + row), worksheet),
+          lsp_prognosa: getData(('BX' + row), worksheet),
+          lsp_realisasi: getData(('CA' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 9,
+          year: year,
+          lsp_rkap: getData(('CD' + row), worksheet),
+          lsp_prognosa: getData(('CG' + row), worksheet),
+          lsp_realisasi: getData(('CJ' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 10,
+          year: year,
+          lsp_rkap: getData(('CM' + row), worksheet),
+          lsp_prognosa: getData(('CP' + row), worksheet),
+          lsp_realisasi: getData(('CS' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 11,
+          year: year,
+          lsp_rkap: getData(('CV' + row), worksheet),
+          lsp_prognosa: getData(('CY' + row), worksheet),
+          lsp_realisasi: getData(('DB' + row), worksheet),
+        });
+
+        labaSetelahPajak.push({
+          month: 12,
+          year: year,
+          lsp_rkap: getData(('DE' + row), worksheet),
+          lsp_prognosa: getData(('DH' + row), worksheet),
+          lsp_realisasi: getData(('DK' + row), worksheet),
+        });
+
+        break;
+      }
+    }
+
+    var insertToDb = function(labaSetelahPajakArray){
+      for(var i=0; i<labaSetelahPajakArray.length; i++){
+
+        var labaSetelahPajak = labaSetelahPajakArray[i];
+        console.log('Insert labaSetelahPajak : ' + JSON.stringify(labaSetelahPajak));
+
+        var query = 'INSERT INTO lsp (year, month, lsp_rkap, lsp_prognosa, lsp_realisasi) ' +
+        'VALUES (?, ?, ?, ?, ?)';
+
+        db.query(query,
+          [
+            labaSetelahPajak.year,
+            labaSetelahPajak.month,
+            labaSetelahPajak.lsp_rkap,
+            labaSetelahPajak.lsp_prognosa,
+            labaSetelahPajak.lsp_realisasi
+          ], function(err, queryResult){
+          if(err){
+            console.log(err);
+            // res.status(500).send('Error while doing operation, Ex. non unique stambuk');
+          }else{
+            // console.log('insert labaRugiLain success : ' + JSON.stringify(queryResult));
+          }
+
+        });
+      }
+    }
+
+    db.query(
+    'DELETE FROM lsp WHERE year = ?',
+    [year],
+    function (err, queryResult) {
+      if(err){
+        res.status(500).send('Error while doing operation.');
+      }else{
+        insertToDb(labaSetelahPajak);
       }
     });
 };
