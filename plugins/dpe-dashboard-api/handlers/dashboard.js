@@ -159,7 +159,7 @@ exports.getDashboardData = function(request, reply) {
 
     result.data1.ok = mainDataResult.sumProjectProgressInYear.sum_rkap_ok;
     result.data1.op = mainDataResult.sumProjectProgressInYear.sum_rkap_op;
-    result.data1.lsp = mainDataResult.sumLspInYear.sum_lsp_rkap;
+    result.data1.lsp = mainDataResult.lspInLastMonthOfYear.lsp_rkap;
 
     result.data2.ok = totalProyekLamaNonJO.sum_realisasi_ok +
                       totalProyekLamaJO.sum_realisasi_ok +
@@ -189,7 +189,7 @@ exports.getDashboardData = function(request, reply) {
 
     result.data3.ok = mainDataResult.sumProjectProgressInYear.sum_prognosa_ok;
     result.data3.op = mainDataResult.sumProjectProgressInYear.sum_prognosa_op;
-    result.data3.lsp = mainDataResult.sumLspInYear.sum_lsp_prognosa;
+    result.data3.lsp = mainDataResult.lspInLastMonthOfYear.lsp_prognosa;
 
     result.data4.ok = result.data3.ok - result.data2.ok;
     result.data4.op = result.data3.op - result.data2.op;

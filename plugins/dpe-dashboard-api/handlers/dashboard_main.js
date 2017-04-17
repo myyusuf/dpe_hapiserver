@@ -67,24 +67,44 @@ exports.getMainData = function(db, month, year, resultCallback) {
     );
   }
 
-  var getSumLspInYear = function(callback){
+  // var getSumLspInYear = function(callback){
+  //   var query = "SELECT " +
+  //
+  //   "SUM(lsp_rkap) AS sum_lsp_rkap, " +
+  //   "SUM(lsp_prognosa) AS sum_lsp_prognosa, " +
+  //   "SUM(lsp_realisasi) AS sum_lsp_realisasi " +
+  //
+  //   "FROM lsp " +
+  //   "WHERE year = ? ";
+  //
+  //   db.query(
+  //     query, [year],
+  //     function(err, rows) {
+  //       if (err) throw callback(err);
+  //
+  //       result.sumLspInYear = null
+  //       if(rows.length > 0){
+  //         result.sumLspInYear = rows[0];
+  //       }
+  //       callback();
+  //     }
+  //   );
+  // }
+
+  var getLspInLastMonthOfYear = function(callback){
     var query = "SELECT " +
-
-    "SUM(lsp_rkap) AS sum_lsp_rkap, " +
-    "SUM(lsp_prognosa) AS sum_lsp_prognosa, " +
-    "SUM(lsp_realisasi) AS sum_lsp_realisasi " +
-
+    "lsp_rkap, lsp_prognosa " +
     "FROM lsp " +
-    "WHERE year = ? ";
+    "WHERE month = ? AND year = ? ";
 
     db.query(
-      query, [year],
+      query, [12, year],
       function(err, rows) {
         if (err) throw callback(err);
 
-        result.sumLspInYear = null
+        result.lspInLastMonthOfYear = null
         if(rows.length > 0){
-          result.sumLspInYear = rows[0];
+          result.lspInLastMonthOfYear = rows[0];
         }
         callback();
       }
@@ -114,7 +134,7 @@ exports.getMainData = function(db, month, year, resultCallback) {
   Flow.series([
     getSumProjectProgressPerMonth,
     getSumProjectProgressInYear,
-    getSumLspInYear,
+    getLspInLastMonthOfYear,
     getLspInMonth,
     function(callback){
       resultCallback(result);
