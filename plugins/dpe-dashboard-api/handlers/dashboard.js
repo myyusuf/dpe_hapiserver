@@ -239,7 +239,9 @@ exports.allCharts = function(request, reply) {
     lspData: []
   };
 
-  DashboardChart.getChartData(this.db, year, function(chartDataList){
+  var db = this.db;
+
+  DashboardChart.getChartData(db, year, function(chartDataList){
 
     for(var i=0; i<chartDataList.length; i++){
       var chartData = chartDataList[i];
@@ -268,7 +270,22 @@ exports.allCharts = function(request, reply) {
       // result.lspData.push(lspData);
 
     }
-    reply(result);
+    // reply(result);
+    DashboardChart.getLspChartData(db, year, function(chartDataList){
+
+      for(var i=0; i<chartDataList.length; i++){
+        var chartData = chartDataList[i];
+        var lkData = {
+          month: MONHTS[chartData.month - 1],
+          plan: chartData.lsp_prognosa,
+          actual: chartData.lsp_realisasi,
+        }
+        result.lspData.push(lkData);
+      }
+
+      reply(result);
+    });
+
   });
 
 };
@@ -337,7 +354,24 @@ exports.dashboardLk = function(request, reply) {
 
 exports.dashboardLsp = function(request, reply) {
 
-    var result = [{
+  var year = request.params.year;
+
+  var result = [];
+  DashboardChart.getLspChartData(this.db, year, function(chartDataList){
+
+    for(var i=0; i<chartDataList.length; i++){
+      var chartData = chartDataList[i];
+      var lkData = {
+        month: MONHTS[chartData.month - 1],
+        plan: chartData.lsp_prognosa,
+        actual: chartData.lsp_realisasi,
+      }
+      result.push(lkData);
+    }
+    reply(result);
+  });
+
+    /*var result = [{
             "month": "Jan",
             "plan": 16.99,
             "actual": 52.727
@@ -400,4 +434,5 @@ exports.dashboardLsp = function(request, reply) {
     ]
 
     reply(result);
+    */
 };

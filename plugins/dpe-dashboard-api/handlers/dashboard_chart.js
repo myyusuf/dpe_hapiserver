@@ -28,3 +28,26 @@ exports.getChartData = function(db, year, resultCallback) {
   );
 
 };
+
+exports.getLspChartData = function(db, year, resultCallback) {
+
+  console.log(`year : ${year}`);
+
+  var query = "SELECT month, " +
+
+  "lsp_rkap, " +
+  "lsp_prognosa, " +
+  "lsp_realisasi " +
+
+  "FROM lsp WHERE year = ? ";
+  var ok = 0;
+
+  db.query(
+    query, [year],
+    function(err, rows) {
+      if (err) throw err;
+      resultCallback(rows);
+    }
+  );
+
+};
