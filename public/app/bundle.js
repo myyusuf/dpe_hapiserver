@@ -2399,7 +2399,10 @@
 	        height: 35,
 	        width: 103,
 	        uploadUrl: 'project_progress/upload',
-	        fileInputName: 'progress'
+	        fileInputName: 'progress',
+	        uploadEnd: function uploadEnd(serverResponse) {
+	          alert(serverResponse);
+	        }
 	      });
 
 	      // var uploadButton = new Button({
@@ -2489,6 +2492,8 @@
 
 	    this.uploadUrl = options.uploadUrl;
 	    this.fileInputName = options.fileInputName;
+
+	    this.uploadEnd = options.uploadEnd;
 	  }
 
 	  _createClass(FileUpload, [{
@@ -2518,6 +2523,15 @@
 	      fileUploadOptions['autoUpload'] = true;
 
 	      fileUploadContainer.jqxFileUpload(fileUploadOptions);
+	      var uploadEnd = this.uploadEnd;
+	      if (uploadEnd) {
+	        fileUploadContainer.on('uploadEnd', function (event) {
+	          var args = event.args;
+	          var fileName = args.file;
+	          var serverResponse = args.response;
+	          uploadEnd(serverResponse);
+	        });
+	      }
 
 	      this.component = fileUploadContainer;
 	    }

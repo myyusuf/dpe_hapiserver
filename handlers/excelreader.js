@@ -2,7 +2,7 @@
 
 var XLSX = require('xlsx');
 
-exports.readExcel = function (fileName, db) {
+exports.readExcel = function (fileName, db, callback) {
 
   const year = 2017;
 
@@ -13,7 +13,27 @@ exports.readExcel = function (fileName, db) {
     if(err){
       res.status(500).send('Error while doing operation.');
     }else{
-      readExcel1(fileName, db);
+      getExistingProjectCodes(db, (projectCodes) => {
+        console.log(projectCodes);
+        // readExcel1(fileName, db);
+        callback(projectCodes);
+      });
+    }
+  });
+}
+
+const getExistingProjectCodes = (db, callback) => {
+  db.query(
+  'SELECT code FROM project',
+  [],
+  function (err, rows) {
+    if(err){
+      res.status(500).send('Error while doing operation.');
+    }else{
+      const projectCodes = rows.map((row) => {
+        return row.code;
+      });
+      callback(projectCodes);
     }
   });
 }
