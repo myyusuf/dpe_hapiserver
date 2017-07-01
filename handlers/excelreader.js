@@ -4,21 +4,34 @@ var XLSX = require('xlsx');
 
 exports.readExcel = function (fileName, db, callback) {
 
-  const year = 2017;
+  const workbook = XLSX.readFile(fileName);
+  const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+  const yearCellValue = worksheet['F6'].v;
+  const YEAR = parseInt(yearCellValue.match(/[0-9]+/)[0], 10);
 
   db.query(
   'DELETE FROM project_progress WHERE year = ?',
-  [year],
+  [YEAR],
   function (err, queryResult) {
     if(err){
       res.status(500).send('Error while doing operation.');
     }else{
       getExistingProjectCodes(db)
       .then((existingProjectCodes) => {
-        readExcel1(fileName, db, existingProjectCodes)
+        readExcel1(fileName, db, YEAR, existingProjectCodes)
         .then((results) => {
-          callback({
-            status: 'OK'
+          readExcel2(fileName, db, YEAR)
+          .then((result) => {
+            callback({
+              status: 'OK'
+            });
+          })
+          .catch((err) => {
+            callback({
+              status: 'UNKNOWN_ERROR',
+              payload: err.message
+            });
           });
         }).catch((err) => {
           callback({
@@ -28,7 +41,10 @@ exports.readExcel = function (fileName, db, callback) {
         })
       })
       .catch((err) => {
-        throw err;
+        callback({
+          status: 'UNKNOWN_ERROR',
+          payload: err.message
+        });
       });
     }
   });
@@ -54,7 +70,7 @@ const getExistingProjectCodes = (db) => {
 
 }
 
-var readExcel1 = function (fileName, db, existingProjectCodes) {
+var readExcel1 = function (fileName, db, theYear, existingProjectCodes) {
 
   return new Promise((resolve, reject) => {
     // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
@@ -66,11 +82,11 @@ var readExcel1 = function (fileName, db, existingProjectCodes) {
 
     const projectProgresses = [];
 
-    const YEAR = 2017;
-
     const colNames = ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR'
     ];
+
+    console.log('---------------->', theYear);
 
     const getProjectProgress = function(projectCode, row, month, year, ws) {
 
@@ -128,7 +144,7 @@ var readExcel1 = function (fileName, db, existingProjectCodes) {
         projectCode = projectCode.trim();
 
         for(var month=1; month<=12; month++){
-          const tmpProjectProgress = getProjectProgress(projectCode, row, month, YEAR, worksheet);
+          const tmpProjectProgress = getProjectProgress(projectCode, row, month, theYear, worksheet);
           projectProgresses.push(tmpProjectProgress);
         }
 
@@ -152,10 +168,6 @@ var readExcel1 = function (fileName, db, existingProjectCodes) {
       };
 
       const unrecoredProjectCodesUnique = uniq(unrecoredProjectCodes);
-
-      // unrecoredProjectCodes = unrecoredProjectCodes.filter((value, index, self) => {
-      //   return self.indexOf(value) === index;
-      // });
 
       reject({
         cause: 'UNRECORDED_PROJECT_CODES',
@@ -226,260 +238,167 @@ var readExcel1 = function (fileName, db, existingProjectCodes) {
   });
 };
 
-var readExcel2 = function (fileName, db) {
+var readExcel2 = function (fileName, db, theYear) {
 
-    // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
+    return new Promise((resolve, reject) => {
+      var workbook = XLSX.readFile(fileName);
 
-    var workbook = XLSX.readFile(fileName);
+      var first_sheet_name = workbook.SheetNames[1];//= 'Lap';
+      var worksheet = workbook.Sheets[first_sheet_name];
 
-    var first_sheet_name = workbook.SheetNames[1];//= 'Lap';
-    console.log(first_sheet_name);
-    var worksheet = workbook.Sheets[first_sheet_name];
+      var labaSetelahPajak = [];
 
-    var result = {
-      labaSetelahPajak: [],
-      labaRugiLain: []
-    };
+      var getData = function(cellName, ws){
 
-    var year = 2017;
-
-    var colNames = ['H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-      'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR'
-    ];
-
-    var getData = function(name, row, month, year, ws){
-
-      var cellMonthPositionInit = (month-1) * 3;
-      cellMonthPositionInit += 2;
-      var cellName = colNames[cellMonthPositionInit] + row;
-      var cellValue = worksheet[cellName]? worksheet[cellName].v : 0;
-
-      console.log('cellName : ' + '"' + cellName + '"' + ", value : " + JSON.stringify(worksheet[cellName]));
-
-      var result = {
-        month: month,
-        year: year,
-        cellValue: cellValue
+        return ws[cellName]? ws[cellName].v : 0;
       }
 
-      return result;
-    }
+      for(var row=8; row<150; row++){
+        var name = worksheet['C' + row]? worksheet['C' + row].v : '';
 
-    for(var row=8; row<150; row++){
-      var name = worksheet['C' + row]? worksheet['C' + row].v : '';
+        if(name == 'Laba Setelah Pajak'){
 
-      if(name == 'Laba Setelah Pajak'){
-        console.log('name : ' + '"' + name + '"');
-        for(var month=1; month<=12; month++){
-          var data = getData(name, row, month, year, worksheet);
-          result.labaSetelahPajak.push(data);
+          console.log('Insert lsp');
+
+          labaSetelahPajak.push({
+            month: 1,
+            year: theYear,
+            lsp_rkap: getData(('J' + row), worksheet),
+            lsp_prognosa: getData(('M' + row), worksheet),
+            lsp_realisasi: getData(('P' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 2,
+            year: theYear,
+            lsp_rkap: getData(('S' + row), worksheet),
+            lsp_prognosa: getData(('V' + row), worksheet),
+            lsp_realisasi: getData(('Y' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 3,
+            year: theYear,
+            lsp_rkap: getData(('AB' + row), worksheet),
+            lsp_prognosa: getData(('AE' + row), worksheet),
+            lsp_realisasi: getData(('AH' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 4,
+            year: theYear,
+            lsp_rkap: getData(('AK' + row), worksheet),
+            lsp_prognosa: getData(('AN' + row), worksheet),
+            lsp_realisasi: getData(('AQ' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 5,
+            year: theYear,
+            lsp_rkap: getData(('AT' + row), worksheet),
+            lsp_prognosa: getData(('AW' + row), worksheet),
+            lsp_realisasi: getData(('AZ' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 6,
+            year: theYear,
+            lsp_rkap: getData(('BC' + row), worksheet),
+            lsp_prognosa: getData(('BF' + row), worksheet),
+            lsp_realisasi: getData(('BI' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 7,
+            year: theYear,
+            lsp_rkap: getData(('BL' + row), worksheet),
+            lsp_prognosa: getData(('BO' + row), worksheet),
+            lsp_realisasi: getData(('BR' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 8,
+            year: theYear,
+            lsp_rkap: getData(('BU' + row), worksheet),
+            lsp_prognosa: getData(('BX' + row), worksheet),
+            lsp_realisasi: getData(('CA' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 9,
+            year: theYear,
+            lsp_rkap: getData(('CD' + row), worksheet),
+            lsp_prognosa: getData(('CG' + row), worksheet),
+            lsp_realisasi: getData(('CJ' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 10,
+            year: theYear,
+            lsp_rkap: getData(('CM' + row), worksheet),
+            lsp_prognosa: getData(('CP' + row), worksheet),
+            lsp_realisasi: getData(('CS' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 11,
+            year: theYear,
+            lsp_rkap: getData(('CV' + row), worksheet),
+            lsp_prognosa: getData(('CY' + row), worksheet),
+            lsp_realisasi: getData(('DB' + row), worksheet),
+          });
+
+          labaSetelahPajak.push({
+            month: 12,
+            year: theYear,
+            lsp_rkap: getData(('DE' + row), worksheet),
+            lsp_prognosa: getData(('DH' + row), worksheet),
+            lsp_realisasi: getData(('DK' + row), worksheet),
+          });
+
+          break;
         }
-      }else if(name == 'Laba/Rugi Lain-Lain'){
-        console.log('name : ' + '"' + name + '"');
-        for(var month=1; month<=12; month++){
-          var data = getData(name, row, month, year, worksheet);
-          result.labaRugiLain.push(data);
+      }
+
+      var insertToDb = function(labaSetelahPajakArray){
+        for(var i=0; i<labaSetelahPajakArray.length; i++){
+
+          var labaSetelahPajak = labaSetelahPajakArray[i];
+          console.log('Insert labaSetelahPajak : ' + JSON.stringify(labaSetelahPajak));
+
+          const query = 'INSERT INTO lsp (year, month, lsp_rkap, lsp_prognosa, lsp_realisasi) ' +
+          'VALUES (?, ?, ?, ?, ?)';
+
+          db.query(query,
+            [
+              labaSetelahPajak.year,
+              labaSetelahPajak.month,
+              labaSetelahPajak.lsp_rkap,
+              labaSetelahPajak.lsp_prognosa,
+              labaSetelahPajak.lsp_realisasi
+            ], function(err, queryResult){
+            if(err){
+              console.log(err);
+              reject(err);
+            } else {
+              resolve(queryResult);
+            }
+
+          });
         }
       }
-    }
 
-    var insertToDb = function(tmpResult){
-      for(var i=0; i<tmpResult.labaSetelahPajak.length; i++){
-
-        var labaSetelahPajak = tmpResult.labaSetelahPajak[i];
-        var labaRugiLain = tmpResult.labaRugiLain[i];
-        var query = 'INSERT INTO monthly_data (year, month, laba_setelah_pajak, laba_rugi_lain) ' +
-        'VALUES (?, ?, ?, ?)';
-
-        db.query(query, [
-          labaSetelahPajak.year,
-          labaSetelahPajak.month,
-          labaSetelahPajak.cellValue,
-          labaRugiLain.cellValue], function(err, queryResult){
-          if(err){
-            console.log(err);
-            // res.status(500).send('Error while doing operation, Ex. non unique stambuk');
-          }else{
-            // console.log('insert labaRugiLain success : ' + JSON.stringify(queryResult));
-          }
-
-        });
-      }
-    }
-
-    db.query(
-    'DELETE FROM monthly_data WHERE year = ?',
-    [year],
-    function (err, queryResult) {
-      if(err){
-        res.status(500).send('Error while doing operation.');
-      }else{
-        insertToDb(result);
-      }
+      db.query(
+      'DELETE FROM lsp WHERE year = ?',
+      [theYear],
+      function (err, queryResult) {
+        if(err){
+          console.log(err);
+          reject(err);
+        }else{
+          insertToDb(labaSetelahPajak);
+        }
+      });
     });
-};
 
-var readExcel3 = function (fileName, db) {
-
-    // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
-
-    var workbook = XLSX.readFile(fileName);
-
-    var first_sheet_name = workbook.SheetNames[1];//= 'Lap';
-    var worksheet = workbook.Sheets[first_sheet_name];
-
-    var labaSetelahPajak = [];
-
-    var year = 2017;
-
-    var getData = function(cellName, ws){
-
-      return ws[cellName]? ws[cellName].v : 0;
-    }
-
-    for(var row=8; row<150; row++){
-      var name = worksheet['C' + row]? worksheet['C' + row].v : '';
-
-      if(name == 'Laba Setelah Pajak'){
-
-        console.log('Insert lsp');
-
-        labaSetelahPajak.push({
-          month: 1,
-          year: year,
-          lsp_rkap: getData(('J' + row), worksheet),
-          lsp_prognosa: getData(('M' + row), worksheet),
-          lsp_realisasi: getData(('P' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 2,
-          year: year,
-          lsp_rkap: getData(('S' + row), worksheet),
-          lsp_prognosa: getData(('V' + row), worksheet),
-          lsp_realisasi: getData(('Y' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 3,
-          year: year,
-          lsp_rkap: getData(('AB' + row), worksheet),
-          lsp_prognosa: getData(('AE' + row), worksheet),
-          lsp_realisasi: getData(('AH' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 4,
-          year: year,
-          lsp_rkap: getData(('AK' + row), worksheet),
-          lsp_prognosa: getData(('AN' + row), worksheet),
-          lsp_realisasi: getData(('AQ' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 5,
-          year: year,
-          lsp_rkap: getData(('AT' + row), worksheet),
-          lsp_prognosa: getData(('AW' + row), worksheet),
-          lsp_realisasi: getData(('AZ' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 6,
-          year: year,
-          lsp_rkap: getData(('BC' + row), worksheet),
-          lsp_prognosa: getData(('BF' + row), worksheet),
-          lsp_realisasi: getData(('BI' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 7,
-          year: year,
-          lsp_rkap: getData(('BL' + row), worksheet),
-          lsp_prognosa: getData(('BO' + row), worksheet),
-          lsp_realisasi: getData(('BR' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 8,
-          year: year,
-          lsp_rkap: getData(('BU' + row), worksheet),
-          lsp_prognosa: getData(('BX' + row), worksheet),
-          lsp_realisasi: getData(('CA' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 9,
-          year: year,
-          lsp_rkap: getData(('CD' + row), worksheet),
-          lsp_prognosa: getData(('CG' + row), worksheet),
-          lsp_realisasi: getData(('CJ' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 10,
-          year: year,
-          lsp_rkap: getData(('CM' + row), worksheet),
-          lsp_prognosa: getData(('CP' + row), worksheet),
-          lsp_realisasi: getData(('CS' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 11,
-          year: year,
-          lsp_rkap: getData(('CV' + row), worksheet),
-          lsp_prognosa: getData(('CY' + row), worksheet),
-          lsp_realisasi: getData(('DB' + row), worksheet),
-        });
-
-        labaSetelahPajak.push({
-          month: 12,
-          year: year,
-          lsp_rkap: getData(('DE' + row), worksheet),
-          lsp_prognosa: getData(('DH' + row), worksheet),
-          lsp_realisasi: getData(('DK' + row), worksheet),
-        });
-
-        break;
-      }
-    }
-
-    var insertToDb = function(labaSetelahPajakArray){
-      for(var i=0; i<labaSetelahPajakArray.length; i++){
-
-        var labaSetelahPajak = labaSetelahPajakArray[i];
-        console.log('Insert labaSetelahPajak : ' + JSON.stringify(labaSetelahPajak));
-
-        var query = 'INSERT INTO lsp (year, month, lsp_rkap, lsp_prognosa, lsp_realisasi) ' +
-        'VALUES (?, ?, ?, ?, ?)';
-
-        db.query(query,
-          [
-            labaSetelahPajak.year,
-            labaSetelahPajak.month,
-            labaSetelahPajak.lsp_rkap,
-            labaSetelahPajak.lsp_prognosa,
-            labaSetelahPajak.lsp_realisasi
-          ], function(err, queryResult){
-          if(err){
-            console.log(err);
-            // res.status(500).send('Error while doing operation, Ex. non unique stambuk');
-          }else{
-            // console.log('insert labaRugiLain success : ' + JSON.stringify(queryResult));
-          }
-
-        });
-      }
-    }
-
-    db.query(
-    'DELETE FROM lsp WHERE year = ?',
-    [year],
-    function (err, queryResult) {
-      if(err){
-        res.status(500).send('Error while doing operation.');
-      }else{
-        insertToDb(labaSetelahPajak);
-      }
-    });
 };
