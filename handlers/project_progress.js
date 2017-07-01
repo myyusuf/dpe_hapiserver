@@ -15,11 +15,11 @@ exports.upload = function(request, reply){
       if (err) {
           throw err;
       }
-      
-      const callback = (result) => {
-        reply({ status: 'ok', result });
-      }
 
+      const callback = (result) => {
+        reply(result);
+      }
       ExcelReader.readExcel(targetPath, this.db, callback);
+
   });
 }

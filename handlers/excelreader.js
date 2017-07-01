@@ -13,50 +13,66 @@ exports.readExcel = function (fileName, db, callback) {
     if(err){
       res.status(500).send('Error while doing operation.');
     }else{
-      getExistingProjectCodes(db, (projectCodes) => {
-        console.log(projectCodes);
-        // readExcel1(fileName, db);
-        callback(projectCodes);
+      getExistingProjectCodes(db)
+      .then((existingProjectCodes) => {
+        readExcel1(fileName, db, existingProjectCodes)
+        .then((results) => {
+          callback({
+            status: 'OK'
+          });
+        }).catch((err) => {
+          callback({
+            status: 'ERROR',
+            payload: err.payload
+          });
+        })
+      })
+      .catch((err) => {
+        throw err;
       });
     }
   });
 }
 
-const getExistingProjectCodes = (db, callback) => {
-  db.query(
-  'SELECT code FROM project',
-  [],
-  function (err, rows) {
-    if(err){
-      res.status(500).send('Error while doing operation.');
-    }else{
-      const projectCodes = rows.map((row) => {
-        return row.code;
-      });
-      callback(projectCodes);
-    }
+const getExistingProjectCodes = (db) => {
+
+  return new Promise((resolve, reject) => {
+    db.query(
+    'SELECT code FROM project',
+    [],
+    function (err, rows) {
+      if(err){
+        reject(err);
+      }else{
+        const projectCodes = rows.map((row) => {
+          return row.code;
+        });
+        resolve(projectCodes);
+      }
+    });
   });
+
 }
 
-var readExcel1 = function (fileName, db) {
+var readExcel1 = function (fileName, db, existingProjectCodes) {
 
+  return new Promise((resolve, reject) => {
     // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
+    const workbook = XLSX.readFile(fileName);
 
-    var workbook = XLSX.readFile(fileName);
-
-    var first_sheet_name = workbook.SheetNames[0];//= 'INPUTAN';
+    const first_sheet_name = workbook.SheetNames[0];//= 'INPUTAN';
     // console.log(first_sheet_name);
-    var worksheet = workbook.Sheets[first_sheet_name];
+    const worksheet = workbook.Sheets[first_sheet_name];
 
-    var result = [];
+    const projectProgresses = [];
 
-    var year = 2017;
+    const YEAR = 2017;
 
-    var colNames = ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    const colNames = ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR'
     ];
 
-    var getProjectProgress = function(projectCode, row, month, year, ws){
+    const getProjectProgress = function(projectCode, row, month, year, ws) {
 
       var cellMonthPositionInit = (month-1) * 3;
       var cellName = colNames[cellMonthPositionInit] + row;
@@ -82,7 +98,7 @@ var readExcel1 = function (fileName, db) {
       cellName = colNames[cellMonthPositionInit] + (row + 2);
       var realisasiLk = worksheet[cellName]? worksheet[cellName].v : 0;
 
-      var projectProgress = {
+      const projectProgress = {
         month: month,
         year: year,
         projectCode: projectCode,
@@ -101,7 +117,7 @@ var readExcel1 = function (fileName, db) {
     }
 
     for(var row=11; row<500; row++){
-      var projectCode = worksheet['C' + row]? worksheet['C' + row].v : '';
+      let projectCode = worksheet['C' + row]? worksheet['C' + row].v : '';
 
       if(projectCode != ''){
 
@@ -112,61 +128,102 @@ var readExcel1 = function (fileName, db) {
         projectCode = projectCode.trim();
 
         for(var month=1; month<=12; month++){
-          var projectProgress = getProjectProgress(projectCode, row, month, year, worksheet);
-          result.push(projectProgress);
+          const tmpProjectProgress = getProjectProgress(projectCode, row, month, YEAR, worksheet);
+          projectProgresses.push(tmpProjectProgress);
         }
 
         row += 2;
       }
     }
 
-    for(var i=0; i<result.length; i++){
+    const promises = [];
+    const unrecoredProjectProgresses = projectProgresses.filter((projectProgress) => {
+      return !existingProjectCodes.includes(projectProgress.projectCode);
+    });
 
-      var projectCode = result[i].projectCode;
-      var year = result[i].year;
-      var month = result[i].month;
+    if (unrecoredProjectProgresses.length > 0) {
 
-      var rkapOk = result[i].rkapOk;
-      var rkapOp = result[i].rkapOp;
-      var rkapLk = result[i].rkapLk;
+      const unrecoredProjectCodes = unrecoredProjectProgresses.map((projectProgress) => {
+        return projectProgress.projectCode;
+      });
 
-      var realisasiOk = result[i].realisasiOk;
-      var realisasiOp = result[i].realisasiOp;
-      var realisasiLk = result[i].realisasiLk;
+      const uniq = function uniq(a) {
+         return Array.from(new Set(a));
+      };
 
-      var prognosaOk = result[i].prognosaOk;
-      var prognosaOp = result[i].prognosaOp;
-      var prognosaLk = result[i].prognosaLk;
+      const unrecoredProjectCodesUnique = uniq(unrecoredProjectCodes);
+
+      // unrecoredProjectCodes = unrecoredProjectCodes.filter((value, index, self) => {
+      //   return self.indexOf(value) === index;
+      // });
+
+      reject({
+        cause: 'UNRECORDED_PROJECT_CODES',
+        payload: unrecoredProjectCodesUnique,
+      });
+      return;
+    }
+
+    for(var i=0; i<projectProgresses.length; i++) {
+
+      var projectCode = projectProgresses[i].projectCode;
+      var year = projectProgresses[i].year;
+      var month = projectProgresses[i].month;
+
+      var rkapOk = projectProgresses[i].rkapOk;
+      var rkapOp = projectProgresses[i].rkapOp;
+      var rkapLk = projectProgresses[i].rkapLk;
+
+      var realisasiOk = projectProgresses[i].realisasiOk;
+      var realisasiOp = projectProgresses[i].realisasiOp;
+      var realisasiLk = projectProgresses[i].realisasiLk;
+
+      var prognosaOk = projectProgresses[i].prognosaOk;
+      var prognosaOp = projectProgresses[i].prognosaOp;
+      var prognosaLk = projectProgresses[i].prognosaLk;
 
       var query = 'INSERT INTO project_progress (project_id, year, month, rkap_ok, rkap_op, rkap_lk, ' +
       'realisasi_ok, realisasi_op, realisasi_lk, prognosa_ok, prognosa_op, prognosa_lk) ' +
       'SELECT id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? FROM project WHERE code = ? ';
 
-      db.query(query, [
-        year,
-        month,
-        rkapOk,
-        rkapOp,
-        rkapLk,
-        realisasiOk,
-        realisasiOp,
-        realisasiLk,
-        prognosaOk,
-        prognosaOp,
-        prognosaLk,
-        projectCode], function(err, result){
-        if(err){
-          console.log(err);
-          // res.status(500).send('Error while doing operation, Ex. non unique stambuk');
-        }else{
-          // res.json({status: 'INSERT_SUCCESS', lastId: res.insertId});
-        }
+      promises.push(new Promise((resolve2, reject2) => {
+        db.query(query, [
+          year,
+          month,
+          rkapOk,
+          rkapOp,
+          rkapLk,
+          realisasiOk,
+          realisasiOp,
+          realisasiLk,
+          prognosaOk,
+          prognosaOp,
+          prognosaLk,
+          projectCode], function(err, result){
+          if(err){
+            // console.log(err);
+            reject2(err);
+          }else{
+            resolve2({
+              affectedRows: result.affectedRows,
+              projectCode: projectCode
+            });
+          }
+        });
+      }));
 
-      });
     }
 
-    readExcel3(fileName, db);
+    Promise.all(promises)
+    .then((results) => {
+      resolve(results);
+    })
+    .catch((err) => {
+      reject(err);
+    })
 
+    // readExcel3(fileName, db);
+  });
 };
 
 var readExcel2 = function (fileName, db) {

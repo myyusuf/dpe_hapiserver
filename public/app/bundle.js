@@ -2400,8 +2400,22 @@
 	        width: 103,
 	        uploadUrl: 'project_progress/upload',
 	        fileInputName: 'progress',
-	        uploadEnd: function uploadEnd(serverResponse) {
-	          alert(serverResponse);
+	        uploadEnd: function uploadEnd(serverResponse, event) {
+	          var responseMatchRegex = serverResponse.match(/{.+}/);
+	          if (responseMatchRegex) {
+	            var responseInJson = JSON.parse(responseMatchRegex[0]);
+	            // console.log(responseInJson);
+	            // const payloads = [];
+	            // for (var i = 0; i < responseInJson.payload.length; i++) {
+	            //   payloads.push(responseInJson.payload[i]);
+	            // }
+	            var responseString = responseInJson.payload.join('\n');
+	            if (responseInJson.status === 'OK') {
+	              alert('Upload completed successfully');
+	            } else {
+	              alert('Error upload file. Unknown project codes : \n' + responseString);
+	            }
+	          }
 	        }
 	      });
 
@@ -2529,7 +2543,7 @@
 	          var args = event.args;
 	          var fileName = args.file;
 	          var serverResponse = args.response;
-	          uploadEnd(serverResponse);
+	          uploadEnd(serverResponse, event);
 	        });
 	      }
 
