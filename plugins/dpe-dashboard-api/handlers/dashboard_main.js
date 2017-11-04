@@ -70,32 +70,73 @@ exports.getMainData = function(db, month, year, resultCallback) {
   }
 
   var getSumProjectProgressInYear = function(callback){
-    var query = "SELECT " +
 
-    "SUM(rkap_ok) AS sum_rkap_ok, " +
-    "SUM(rkap_op) AS sum_rkap_op, " +
-    "SUM(rkap_lk) AS sum_rkap_lk, " +
+    const getLatesRealizationMonth = (theYear) => (
+      new Promise((resolve, reject) => {
+        const query =
+        `SELECT MAX(month) AS maxMonth FROM (SELECT
+          pp.month AS month, SUM(realisasi_ok) AS sum_realisasi_ok
+          FROM project_progress pp
+          WHERE pp.year = ? AND pp.realisasi_ok > 0
+          GROUP BY pp.month) AS a_table
+        `;
 
-    "SUM(prognosa_ok) AS sum_prognosa_ok, " +
-    "SUM(prognosa_op) AS sum_prognosa_op, " +
-    "SUM(prognosa_lk) AS sum_prognosa_lk " +
+        db.query(
+          query, [theYear],
+          function(err, rows) {
+            if (err) reject(err);
 
-    "FROM project_progress pp " +
-    "LEFT JOIN project p ON pp.project_id = p.id " +
-    "WHERE pp.year = ? ";
-
-    db.query(
-      query, [year],
-      function(err, rows) {
-        if (err) throw callback(err);
-
-        result.sumProjectProgressInYear = null;
-        if(rows.length > 0){
-          result.sumProjectProgressInYear = rows[0];
-        }
-        callback();
-      }
+            if(rows.length > 0){
+              resolve(rows[0].maxMonth);
+            } else {
+              resolve(1);
+            }
+            return;
+          }
+        );
+      })
     );
+
+    const getSumProjectProgress = (theYear, theMonth) => (
+      new Promise((resolve, reject) => {
+        const query = "SELECT " +
+
+        "SUM(rkap_ok) AS sum_rkap_ok, " +
+        "SUM(rkap_op) AS sum_rkap_op, " +
+        "SUM(rkap_lk) AS sum_rkap_lk, " +
+
+        "SUM(case when pp.month > ? then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
+        "SUM(prognosa_op) AS sum_prognosa_op, " +
+        "SUM(prognosa_lk) AS sum_prognosa_lk " +
+
+        "FROM project_progress pp " +
+        "LEFT JOIN project p ON pp.project_id = p.id " +
+        "WHERE pp.year = ? ";
+        debugger;
+
+        db.query(
+          query, [theMonth, theYear],
+          function(err, rows) {
+            if (err) reject(err);
+            if(rows.length > 0){
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+            return;
+          }
+        );
+      })
+    );
+
+    getLatesRealizationMonth(year)
+    .then((latestMonth) => {
+      getSumProjectProgress(year, latestMonth)
+      .then((sumProjectProgress) => {
+        result.sumProjectProgressInYear = sumProjectProgress;
+        callback();
+      });
+    });
   }
 
   // var getSumLspInYear = function(callback){

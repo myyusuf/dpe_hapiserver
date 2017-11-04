@@ -2,13 +2,16 @@
 
 var XLSX = require('xlsx');
 
+const INPUTAN_SHEET_POSITION = 0;
+const RINCIAN_SHEET_POSITION = 1;
+
 exports.readExcel = function (fileName, db, callback) {
 
   const workbook = XLSX.readFile(fileName);
-  const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+  const worksheet = workbook.Sheets[workbook.SheetNames[INPUTAN_SHEET_POSITION]];
 
   const yearCellValue = worksheet['F6'].v;
-  const YEAR = parseInt(yearCellValue.match(/[0-9]+/)[0], 10);
+  const YEAR = 2017;//parseInt(yearCellValue.match(/[0-9]+/)[0], 10);
 
   db.query(
   'DELETE FROM project_progress WHERE year = ?',
@@ -76,7 +79,7 @@ var readExcel1 = function (fileName, db, theYear, existingProjectCodes) {
     // const fileName = '/Users/myyusuf/Documents/Projects/WIKA/PCD/Dashboard/Documents/KK_HU_DPE_2017.xlsx';
     const workbook = XLSX.readFile(fileName);
 
-    const first_sheet_name = workbook.SheetNames[0];//= 'INPUTAN';
+    const first_sheet_name = workbook.SheetNames[INPUTAN_SHEET_POSITION];//= 'INPUTAN';
     // console.log(first_sheet_name);
     const worksheet = workbook.Sheets[first_sheet_name];
 
@@ -243,7 +246,7 @@ var readExcel2 = function (fileName, db, theYear) {
     return new Promise((resolve, reject) => {
       var workbook = XLSX.readFile(fileName);
 
-      var first_sheet_name = workbook.SheetNames[1];//= 'Lap';
+      var first_sheet_name = workbook.SheetNames[RINCIAN_SHEET_POSITION];//= 'Lap';
       var worksheet = workbook.Sheets[first_sheet_name];
 
       var labaSetelahPajak = [];
