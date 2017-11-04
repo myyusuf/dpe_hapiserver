@@ -49,17 +49,19 @@ exports.getMainData = function(db, month, year, resultCallback) {
     "SUM(realisasi_op) AS sum_realisasi_op, " +
     "SUM(realisasi_lk) AS sum_realisasi_lk, " +
 
-    "SUM(prognosa_ok) AS sum_prognosa_ok, " +
+    "SUM(case when pp.month > 9 then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
     "SUM(prognosa_op) AS sum_prognosa_op, " +
     "SUM(prognosa_lk) AS sum_prognosa_lk " +
 
     "FROM project_progress pp " +
     "LEFT JOIN project p ON pp.project_id = p.id " +
-    "WHERE pp.month <= ? AND pp.year = ? " +
-    "GROUP BY p.project_type ";
+    // "WHERE pp.month <= ? AND pp.year = ? " +
+    "WHERE pp.month <= 12 AND pp.year = ? " +
+    "GROUP BY p.project_type " +
+    "ORDER BY p.project_type ";
 
     db.query(
-      query, [12, year],
+      query, [year],
       function(err, rows) {
         if (err) throw callback(err);
 
@@ -112,7 +114,6 @@ exports.getMainData = function(db, month, year, resultCallback) {
         "FROM project_progress pp " +
         "LEFT JOIN project p ON pp.project_id = p.id " +
         "WHERE pp.year = ? ";
-        debugger;
 
         db.query(
           query, [theMonth, theYear],
