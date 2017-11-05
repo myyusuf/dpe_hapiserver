@@ -50,8 +50,8 @@ exports.getMainData = function(db, month, year, resultCallback) {
     "SUM(realisasi_lk) AS sum_realisasi_lk, " +
 
     "SUM(case when pp.month > 9 then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
-    "SUM(prognosa_op) AS sum_prognosa_op, " +
-    "SUM(prognosa_lk) AS sum_prognosa_lk " +
+    "SUM(case when pp.month > 9 then prognosa_op else realisasi_op end) AS sum_prognosa_op, " +
+    "SUM(case when pp.month > 9 then prognosa_lk else realisasi_lk end) AS sum_prognosa_lk " +
 
     "FROM project_progress pp " +
     "LEFT JOIN project p ON pp.project_id = p.id " +
@@ -108,15 +108,15 @@ exports.getMainData = function(db, month, year, resultCallback) {
         "SUM(rkap_lk) AS sum_rkap_lk, " +
 
         "SUM(case when pp.month > ? then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
-        "SUM(prognosa_op) AS sum_prognosa_op, " +
-        "SUM(prognosa_lk) AS sum_prognosa_lk " +
+        "SUM(case when pp.month > ? then prognosa_op else realisasi_op end) AS sum_prognosa_op, " +
+        "SUM(case when pp.month > ? then prognosa_lk else realisasi_lk end) AS sum_prognosa_lk " +
 
         "FROM project_progress pp " +
         "LEFT JOIN project p ON pp.project_id = p.id " +
         "WHERE pp.year = ? ";
 
         db.query(
-          query, [theMonth, theYear],
+          query, [theMonth, theMonth, theMonth, theYear],
           function(err, rows) {
             if (err) reject(err);
             if(rows.length > 0){
