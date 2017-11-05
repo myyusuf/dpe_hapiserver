@@ -4,8 +4,32 @@ const Flow = require('nimble');
 
 exports.getMainData = function(db, month, year, resultCallback) {
 
-  var result = {
-  }
+  const result = {
+  };
+
+  const getLatesRealizationMonth = (callback) => {
+    const query =
+    `SELECT MAX(month) AS maxMonth FROM (SELECT
+      pp.month AS month, SUM(realisasi_ok) AS sum_realisasi_ok
+      FROM project_progress pp
+      WHERE pp.year = ? AND pp.realisasi_ok > 0
+      GROUP BY pp.month) AS a_table
+    `;
+
+    db.query(
+      query, [year],
+      (err, rows) => {
+        if (err) callback(err);
+
+        if (rows.length > 0) {
+          result.latestRealizationMonth = rows[0].maxMonth;
+        } else {
+          result.latestRealizationMonth = 1;
+        }
+        callback();
+      }
+    );
+  };
 
   var getSumProjectProgressPerMonth = function(callback){
     var query = "SELECT p.project_type, " +
@@ -49,9 +73,9 @@ exports.getMainData = function(db, month, year, resultCallback) {
     "SUM(realisasi_op) AS sum_realisasi_op, " +
     "SUM(realisasi_lk) AS sum_realisasi_lk, " +
 
-    "SUM(case when pp.month > 9 then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
-    "SUM(case when pp.month > 9 then prognosa_op else realisasi_op end) AS sum_prognosa_op, " +
-    "SUM(case when pp.month > 9 then prognosa_lk else realisasi_lk end) AS sum_prognosa_lk " +
+    "SUM(case when pp.month > ? then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
+    "SUM(case when pp.month > ? then prognosa_op else realisasi_op end) AS sum_prognosa_op, " +
+    "SUM(case when pp.month > ? then prognosa_lk else realisasi_lk end) AS sum_prognosa_lk " +
 
     "FROM project_progress pp " +
     "LEFT JOIN project p ON pp.project_id = p.id " +
@@ -61,7 +85,11 @@ exports.getMainData = function(db, month, year, resultCallback) {
     "ORDER BY p.project_type ";
 
     db.query(
-      query, [year],
+      query, [
+        result.latestRealizationMonth,
+        result.latestRealizationMonth,
+        result.latestRealizationMonth,
+        year],
       function(err, rows) {
         if (err) throw callback(err);
 
@@ -73,72 +101,37 @@ exports.getMainData = function(db, month, year, resultCallback) {
 
   var getSumProjectProgressInYear = function(callback){
 
-    const getLatesRealizationMonth = (theYear) => (
-      new Promise((resolve, reject) => {
-        const query =
-        `SELECT MAX(month) AS maxMonth FROM (SELECT
-          pp.month AS month, SUM(realisasi_ok) AS sum_realisasi_ok
-          FROM project_progress pp
-          WHERE pp.year = ? AND pp.realisasi_ok > 0
-          GROUP BY pp.month) AS a_table
-        `;
+    const query = "SELECT " +
 
-        db.query(
-          query, [theYear],
-          function(err, rows) {
-            if (err) reject(err);
+    "SUM(rkap_ok) AS sum_rkap_ok, " +
+    "SUM(rkap_op) AS sum_rkap_op, " +
+    "SUM(rkap_lk) AS sum_rkap_lk, " +
 
-            if(rows.length > 0){
-              resolve(rows[0].maxMonth);
-            } else {
-              resolve(1);
-            }
-            return;
-          }
-        );
-      })
-    );
+    "SUM(case when pp.month > ? then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
+    "SUM(case when pp.month > ? then prognosa_op else realisasi_op end) AS sum_prognosa_op, " +
+    "SUM(case when pp.month > ? then prognosa_lk else realisasi_lk end) AS sum_prognosa_lk " +
 
-    const getSumProjectProgress = (theYear, theMonth) => (
-      new Promise((resolve, reject) => {
-        const query = "SELECT " +
+    "FROM project_progress pp " +
+    "LEFT JOIN project p ON pp.project_id = p.id " +
+    "WHERE pp.year = ? ";
 
-        "SUM(rkap_ok) AS sum_rkap_ok, " +
-        "SUM(rkap_op) AS sum_rkap_op, " +
-        "SUM(rkap_lk) AS sum_rkap_lk, " +
-
-        "SUM(case when pp.month > ? then prognosa_ok else realisasi_ok end) AS sum_prognosa_ok, " +
-        "SUM(case when pp.month > ? then prognosa_op else realisasi_op end) AS sum_prognosa_op, " +
-        "SUM(case when pp.month > ? then prognosa_lk else realisasi_lk end) AS sum_prognosa_lk " +
-
-        "FROM project_progress pp " +
-        "LEFT JOIN project p ON pp.project_id = p.id " +
-        "WHERE pp.year = ? ";
-
-        db.query(
-          query, [theMonth, theMonth, theMonth, theYear],
-          function(err, rows) {
-            if (err) reject(err);
-            if(rows.length > 0){
-              resolve(rows[0]);
-            } else {
-              resolve(null);
-            }
-            return;
-          }
-        );
-      })
-    );
-
-    getLatesRealizationMonth(year)
-    .then((latestMonth) => {
-      getSumProjectProgress(year, latestMonth)
-      .then((sumProjectProgress) => {
-        result.sumProjectProgressInYear = sumProjectProgress;
+    db.query(
+      query, [
+        result.latestRealizationMonth,
+        result.latestRealizationMonth,
+        result.latestRealizationMonth,
+        year],
+      (err, rows) => {
+        if (err) callback(err);
+        if (rows.length > 0) {
+          result.sumProjectProgressInYear = rows[0];
+        } else {
+          result.sumProjectProgressInYear = null;
+        }
         callback();
-      });
-    });
-  }
+      }
+    );
+  };
 
   // var getSumLspInYear = function(callback){
   //   var query = "SELECT " +
@@ -205,6 +198,7 @@ exports.getMainData = function(db, month, year, resultCallback) {
   }
 
   Flow.series([
+    getLatesRealizationMonth,
     getSumProjectProgressPerMonth,
     getSumProjectProgressLastMonthOfYear,
     getSumProjectProgressInYear,
