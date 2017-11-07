@@ -221,6 +221,15 @@ exports.getDashboardData = function(request, reply) {
       (totalProyekBaruPengusahaanNonJO.sum_realisasi_op + totalProyekBaruPengusahaanJO.sum_realisasi_op);
       result.data7.lk = (ppLastMonthOfYear[4].sum_prognosa_lk + ppLastMonthOfYear[5].sum_prognosa_lk) -
       (totalProyekBaruPengusahaanNonJO.sum_realisasi_lk + totalProyekBaruPengusahaanJO.sum_realisasi_lk);
+
+      result.data8.ok = mainDataResult.claim.ok;
+      result.data8.op = mainDataResult.claim.op;
+      result.data8.lk = mainDataResult.claim.lk;
+
+      // TODO Ask
+      result.data5.ok = result.data5.ok - result.data8.ok;
+      result.data5.op = result.data5.op - result.data8.op;
+      result.data5.lk = result.data5.lk - result.data8.lk;
     } else {
       result.data5.ok = 0;
       result.data5.op = 0;
@@ -233,6 +242,10 @@ exports.getDashboardData = function(request, reply) {
       result.data7.ok = 0;
       result.data7.op = 0;
       result.data7.lk = 0;
+
+      result.data8.ok = 0;
+      result.data8.op = 0;
+      result.data8.lk = 0;
     }
 
 

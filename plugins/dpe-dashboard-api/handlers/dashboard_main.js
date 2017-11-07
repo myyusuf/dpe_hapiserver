@@ -197,6 +197,21 @@ exports.getMainData = function(db, month, year, resultCallback) {
     );
   }
 
+  const getClaim = (callback) => {
+    const query = 'SELECT ok, op, lk FROM claim WHERE year = ? ';
+
+    db.query(
+      query, [year],
+      (err, rows) => {
+        if (err) throw callback(err);
+        result.claim = null;
+        if (rows.length > 0) {
+          result.claim = rows[0];
+        }
+        callback();
+      });
+  };
+
   Flow.series([
     getLatesRealizationMonth,
     getSumProjectProgressPerMonth,
@@ -204,6 +219,7 @@ exports.getMainData = function(db, month, year, resultCallback) {
     getSumProjectProgressInYear,
     getLspInLastMonthOfYear,
     getLspInMonth,
+    getClaim,
     function(callback){
       resultCallback(result);
     }

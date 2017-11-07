@@ -26,9 +26,12 @@ exports.readExcel = function (fileName, db, callback) {
         .then((results) => {
           readExcel2(fileName, db, YEAR)
           .then((result) => {
-            callback({
-              status: 'OK'
-            });
+            readClaim(fileName, db, YEAR)
+            .then((result) => {
+              callback({
+                status: 'OK'
+              });
+            })
           })
           .catch((err) => {
             callback({
@@ -242,7 +245,6 @@ var readExcel1 = function (fileName, db, theYear, existingProjectCodes) {
 };
 
 var readExcel2 = function (fileName, db, theYear) {
-
     return new Promise((resolve, reject) => {
       var workbook = XLSX.readFile(fileName);
 
@@ -403,5 +405,38 @@ var readExcel2 = function (fileName, db, theYear) {
         }
       });
     });
-
 };
+
+const readClaim = (fileName, db, theYear) => (
+  new Promise((resolve, reject) => {
+    const workbook = XLSX.readFile(fileName);
+    const firstSheetName = workbook.SheetNames[RINCIAN_SHEET_POSITION];
+    const worksheet = workbook.Sheets[firstSheetName];
+
+    const getData = (cellName, ws) => (ws[cellName] ? ws[cellName].v : 0);
+    const ok = getData('DV10', worksheet);
+    const op = getData('DW10', worksheet);
+    const lk = getData('DX10', worksheet);
+
+    db.query(
+    'DELETE FROM claim WHERE year = ?',
+    [theYear],
+    (err) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        db.query('INSERT INTO claim (year, ok, op, lk) VALUES (?, ?, ?, ?)',
+          [theYear, ok, op, lk,
+          ], (err2, queryResult) => {
+            if (err2) {
+              console.log(err);
+              reject(err);
+            } else {
+              resolve(queryResult);
+            }
+          });
+      }
+    });
+  })
+);
