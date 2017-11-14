@@ -66,7 +66,9 @@ module.exports = [
           payload: {
               parse: true,
               output: 'file',
-              maxBytes: 4194304
+              // maxBytes: 4194304
+              maxBytes: 209715200,
+              timeout: 60000 * 1
           }
       }
   },

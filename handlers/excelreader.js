@@ -39,14 +39,15 @@ exports.readExcel = function (fileName, db, callback) {
               payload: err.message
             });
           });
-        }).catch((err) => {
+        }).catch((errx) => {
+          console.log(errx);
           callback({
             status: 'ERROR',
             payload: err.payload
           });
         })
       })
-      .catch((err) => {
+      .catch((erry) => {
         callback({
           status: 'UNKNOWN_ERROR',
           payload: err.message
