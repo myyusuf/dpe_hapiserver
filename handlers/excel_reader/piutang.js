@@ -128,7 +128,9 @@ const readProjectDataInAYear = (worksheet, year, startRow) => {
 const readAllProjectsDataInAYear = (worksheet, year) => {
   const allProjectsDataInAYear = [];
   for (let row = 4; row <= 29; row += 5) {
-    allProjectsDataInAYear.push(...readProjectDataInAYear(worksheet, year, row));
+    if (readCell(worksheet, row, 0)) {
+      allProjectsDataInAYear.push(...readProjectDataInAYear(worksheet, year, row));
+    }
   }
   return allProjectsDataInAYear;
 };
@@ -140,6 +142,7 @@ exports.readExcel = (fileName, db) => (
     // const yearCellValue = worksheet.F6.v;
     const year = 2017;
     const allProjectsDataInAYear = readAllProjectsDataInAYear(worksheet, year);
+    debugger;
     const promises = [];
     deletePiutangTable(db, year)
     .then(() => {
