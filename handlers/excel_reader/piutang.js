@@ -142,7 +142,6 @@ exports.readExcel = (fileName, db) => (
     // const yearCellValue = worksheet.F6.v;
     const year = 2017;
     const allProjectsDataInAYear = readAllProjectsDataInAYear(worksheet, year);
-    debugger;
     const promises = [];
     deletePiutangTable(db, year)
     .then(() => {
