@@ -49,6 +49,7 @@ const insertPiutang = (db, projectData) => (
         ?, ?, ?, ?,
         ?, ?, ?, ?,
         ?, ?, ?, ?,
+        ?, ?, ?, ?,
         ?, ?
       FROM project WHERE code = ? `,
       [
@@ -94,28 +95,28 @@ const readProjectDataInAYear = (worksheet, year, startRow) => {
   for (let month = 1; month <= 12; month += 1) {
     const columnPosition = initialColumnPosition + ((month - 1) * 6);
     const projectData = {
-      owner: readCell(worksheet, startRow, 2),
+      owner: readCell(worksheet, startRow, 2) || 0,
       projectCode: readCell(worksheet, startRow, 5),
-      pdp1: readCell(worksheet, startRow, columnPosition),
-      tagihanBruto1: readCell(worksheet, startRow + 1, columnPosition),
-      piutangUsaha1: readCell(worksheet, startRow + 2, columnPosition),
-      piutangRetensi1: readCell(worksheet, startRow + 3, columnPosition),
-      pdp2: readCell(worksheet, startRow, columnPosition + 1),
-      tagihanBruto2: readCell(worksheet, startRow + 1, columnPosition + 1),
-      piutangUsaha2: readCell(worksheet, startRow + 2, columnPosition + 1),
-      piutangRetensi2: readCell(worksheet, startRow + 3, columnPosition + 1),
-      pdp3: readCell(worksheet, startRow, columnPosition + 2),
-      tagihanBruto3: readCell(worksheet, startRow + 1, columnPosition + 2),
-      piutangUsaha3: readCell(worksheet, startRow + 2, columnPosition + 2),
-      piutangRetensi3: readCell(worksheet, startRow + 3, columnPosition + 2),
-      pdp4: readCell(worksheet, startRow, columnPosition + 3),
-      tagihanBruto4: readCell(worksheet, startRow + 1, columnPosition + 3),
-      piutangUsaha4: readCell(worksheet, startRow + 2, columnPosition + 3),
-      piutangRetensi4: readCell(worksheet, startRow + 3, columnPosition + 3),
-      pdp5: readCell(worksheet, startRow, columnPosition + 4),
-      tagihanBruto5: readCell(worksheet, startRow + 1, columnPosition + 4),
-      piutangUsaha5: readCell(worksheet, startRow + 2, columnPosition + 4),
-      piutangRetensi5: readCell(worksheet, startRow + 3, columnPosition + 4),
+      pdp1: readCell(worksheet, startRow, columnPosition) || 0,
+      tagihanBruto1: readCell(worksheet, startRow + 1, columnPosition) || 0,
+      piutangUsaha1: readCell(worksheet, startRow + 2, columnPosition) || 0,
+      piutangRetensi1: readCell(worksheet, startRow + 3, columnPosition) || 0,
+      pdp2: readCell(worksheet, startRow, columnPosition + 1) || 0,
+      tagihanBruto2: readCell(worksheet, startRow + 1, columnPosition + 1) || 0,
+      piutangUsaha2: readCell(worksheet, startRow + 2, columnPosition + 1) || 0,
+      piutangRetensi2: readCell(worksheet, startRow + 3, columnPosition + 1) || 0,
+      pdp3: readCell(worksheet, startRow, columnPosition + 2) || 0,
+      tagihanBruto3: readCell(worksheet, startRow + 1, columnPosition + 2) || 0,
+      piutangUsaha3: readCell(worksheet, startRow + 2, columnPosition + 2) || 0,
+      piutangRetensi3: readCell(worksheet, startRow + 3, columnPosition + 2) || 0,
+      pdp4: readCell(worksheet, startRow, columnPosition + 3) || 0,
+      tagihanBruto4: readCell(worksheet, startRow + 1, columnPosition + 3) || 0,
+      piutangUsaha4: readCell(worksheet, startRow + 2, columnPosition + 3) || 0,
+      piutangRetensi4: readCell(worksheet, startRow + 3, columnPosition + 3) || 0,
+      pdp5: readCell(worksheet, startRow, columnPosition + 4) || 0,
+      tagihanBruto5: readCell(worksheet, startRow + 1, columnPosition + 4) || 0,
+      piutangUsaha5: readCell(worksheet, startRow + 2, columnPosition + 4) || 0,
+      piutangRetensi5: readCell(worksheet, startRow + 3, columnPosition + 4) || 0,
       month,
       year,
     };
@@ -143,7 +144,7 @@ exports.readExcel = (fileName, db) => (
     deletePiutangTable(db, year)
     .then(() => {
       for (let i = 0; i < allProjectsDataInAYear.length; i += 1) {
-        promises.push(db, insertPiutang(allProjectsDataInAYear[i]));
+        promises.push(db, insertPiutang(db, allProjectsDataInAYear[i]));
       }
       Promise.all(promises)
       .then(() => {
