@@ -4,6 +4,7 @@ const Actions = require('./handlers/actions');
 const Project = require('./handlers/project');
 const ProjectProgress = require('./handlers/project_progress');
 const Dashboard = require('./handlers/dashboard');
+const DashboardPiutang = require('./handlers/dashboard_piutang');
 
 module.exports = [
   {
@@ -87,5 +88,15 @@ module.exports = [
       method: 'GET',
       path: '/api/project_progress',
       handler: ProjectProgress.find
-  }
+  },
+  {
+    method: 'GET',
+    path: '/api/piutang/piutang/{year}/{month}',
+    handler: DashboardPiutang.findPiutangData
+  },
+  {
+    method: 'GET',
+    path: '/api/piutang/proyeksi/{year}',
+    handler: DashboardPiutang.findProyeksiData
+  },
 ];
