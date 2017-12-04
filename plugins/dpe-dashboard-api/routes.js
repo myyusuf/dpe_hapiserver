@@ -96,7 +96,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/api/piutang/proyeksi/{year}',
+    path: '/api/piutang/proyeksi/{year}/{month}',
     handler: DashboardPiutang.findProyeksiData
   },
 ];

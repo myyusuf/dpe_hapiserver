@@ -13,10 +13,11 @@ exports.findPiutangData = function findPiutangData(request, reply) {
 
 exports.findProyeksiData = function findProyeksiData(request, reply) {
   const year = request.params.year;
+  const month = request.params.month;
 
   this.db.query(
-    'SELECT * FROM proyeksi WHERE year = ?',
-    [year],
+    'SELECT * FROM proyeksi WHERE month = ? AND year = ?',
+    [month, year],
     (err, rows) => {
       if (err) reply(err);
       reply(rows);
