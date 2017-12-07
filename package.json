@@ -16,6 +16,7 @@
     "pg": "^6.2.4",
     "xlsx": "^0.8.5",
     "dotenv": "^4.0.0",
-    "jsonwebtoken": "^7.4.1"
+    "jsonwebtoken": "^7.4.1",
+    "password-generator": "^2.1.0"
   }
 }

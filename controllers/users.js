@@ -1,97 +1,92 @@
-'use strict';
-
 const generatePassword = require('password-generator');
 
-exports.create = function (req, res) {
-  
+exports.create = (req, res) => {
   const db = req.app.locals.db;
 
   const user = {
-    username: request.payload.username,
+    username: req.payload.username,
     password: generatePassword(),
-    name: request.payload.name,
-    email: request.payload.email,
+    name: req.payload.name,
+    email: req.payload.email,
   };
 
-  db.query('INSERT INTO users SET ?', user, function(err, result){
-    if(err){
+  db.query('INSERT INTO users SET ?', user, (err, result) => {
+    if (err) {
       console.log(err);
-      req.json('Error while doing operation, Ex. non unique value').code(500);
-    }else{
-      req.json({ status: 'ok' });
+      res.send('Error while doing operation, Ex. non unique value').code(500);
+    } else {
+      res.json({ result });
     }
   });
 };
 
-exports.find = function(req, res) {
+exports.find = (req, res) => {
+  const db = req.app.locals.db;
 
-  var db = this.db;
-
-  var query = `
-    SELECT * FROM users 
-    WHERE (username LIKE ? or name LIKE ?) 
-    ORDER BY username 
+  let query = `
+    SELECT * FROM users
+    WHERE (username LIKE ? or name LIKE ?)
+    ORDER BY username
     LIMIT ?,?`;
-  var pagesize = parseInt(request.query.pagesize);
-  var pagenum = parseInt(request.query.pagenum);
-  var username = request.query.searchTxt + '%';
-  var name = '%' + request.query.searchTxt + '%';
+  const pagesize = parseInt(req.query.pagesize, 10);
+  const pagenum = parseInt(req.query.pagenum, 10);
+  const username = `${req.query.searchTxt}%`;
+  const name = `%${req.query.searchTxt}%`;
 
   db.query(
     query, [username, name, pagenum * pagesize, pagesize],
-    function(err, rows) {
+    (err, rows) => {
       if (err) throw err;
-      const query = 'SELECT count(1) as totalRecords FROM users WHERE (username LIKE ? or name LIKE ?)';
+      query = 'SELECT count(1) as totalRecords FROM users WHERE (username LIKE ? or name LIKE ?)';
       db.query(
         query, [username, name],
-        function(err, rows2) {
-          if (err) throw err;
-
-          var totalRecords = rows2[0].totalRecords;
-          req.json({data: rows, totalRecords: totalRecords});
-        }
-      );
-    }
-  );
+        (err2, rows2) => {
+          if (err2) throw err2;
+          const totalRecords = rows2[0].totalRecords;
+          res.json({ data: rows, totalRecords });
+        });
+    });
 };
 
-exports.update = function (req, res) {
+exports.update = (req, res) => {
+  const db = req.app.locals.db;
 
-  var user = request.payload;
-  var username = request.params.username;
+  const user = req.payload;
+  const username = req.params.username;
 
-  this.db.query(
-  'UPDATE users SET name = ?, '+
-  'email = ? ' +
-  'WHERE username = ?',
-  [
-    user.name,
-    user.email,
-    username
-  ],
-  function (err, result) {
-    if(err){
-      console.log(err);
-      req.json('Error while doing operation.').code(500);
-    }else{
-      req.json({ status: 'ok' });
-    }
-  });
+  db.query(
+  `UPDATE users SET name = ?,
+  email = ?
+  WHERE username = ?`,
+    [
+      user.name,
+      user.email,
+      username,
+    ],
+   (err, result) => {
+     if (err) {
+       console.log(err);
+       res.send('Error while doing operation.').code(500);
+     } else {
+       res.json({ result });
+     }
+   });
 };
 
-exports.delete = function(req, res) {
+exports.remove = (req, res) => {
+  const db = req.app.locals.db;
 
-  var username = request.params.username;
+  const username = req.params.username;
 
-  this.db.query(
+  db.query(
   'DELETE FROM users WHERE username = ? ',
   [username],
-  function (err, result) {
-    if(err){
+  (err, result) => {
+    if (err) {
       console.log(err);
-      req.json('Error while doing operation.').code(500);
-    }else{
-      req.json({ status: 'ok' });
+      res.send('Error while doing operation.').code(500);
+    } else {
+      res.json({ result });
     }
   });
 };
