@@ -2,31 +2,36 @@
 
 const generatePassword = require('password-generator');
 
-exports.create = function (request, reply) {
+exports.create = function (req, res) {
+  
+  const db = req.app.locals.db;
 
-  var user = {
+  const user = {
     username: request.payload.username,
     password: generatePassword(),
     name: request.payload.name,
     email: request.payload.email,
   };
 
-  this.db.query('INSERT INTO users SET ?', user, function(err, result){
+  db.query('INSERT INTO users SET ?', user, function(err, result){
     if(err){
       console.log(err);
-      reply('Error while doing operation, Ex. non unique value').code(500);
+      req.json('Error while doing operation, Ex. non unique value').code(500);
     }else{
-      reply({ status: 'ok' });
+      req.json({ status: 'ok' });
     }
   });
 };
 
-exports.find = function(request, reply) {
+exports.find = function(req, res) {
 
   var db = this.db;
 
-  var query = "SELECT * FROM users WHERE (username LIKE ? or name LIKE ?) " +
-  "ORDER BY username LIMIT ?,? ";
+  var query = `
+    SELECT * FROM users 
+    WHERE (username LIKE ? or name LIKE ?) 
+    ORDER BY username 
+    LIMIT ?,?`;
   var pagesize = parseInt(request.query.pagesize);
   var pagenum = parseInt(request.query.pagenum);
   var username = request.query.searchTxt + '%';
@@ -36,22 +41,21 @@ exports.find = function(request, reply) {
     query, [username, name, pagenum * pagesize, pagesize],
     function(err, rows) {
       if (err) throw err;
-
-      var query = "SELECT count(1) as totalRecords FROM users WHERE (username LIKE ? or name LIKE ?) ";
+      const query = 'SELECT count(1) as totalRecords FROM users WHERE (username LIKE ? or name LIKE ?)';
       db.query(
         query, [username, name],
         function(err, rows2) {
           if (err) throw err;
 
           var totalRecords = rows2[0].totalRecords;
-          reply({data: rows, totalRecords: totalRecords});
+          req.json({data: rows, totalRecords: totalRecords});
         }
       );
     }
   );
 };
 
-exports.update = function (request, reply) {
+exports.update = function (req, res) {
 
   var user = request.payload;
   var username = request.params.username;
@@ -68,14 +72,14 @@ exports.update = function (request, reply) {
   function (err, result) {
     if(err){
       console.log(err);
-      reply('Error while doing operation.').code(500);
+      req.json('Error while doing operation.').code(500);
     }else{
-      reply({ status: 'ok' });
+      req.json({ status: 'ok' });
     }
   });
 };
 
-exports.delete = function(request, reply) {
+exports.delete = function(req, res) {
 
   var username = request.params.username;
 
@@ -85,9 +89,9 @@ exports.delete = function(request, reply) {
   function (err, result) {
     if(err){
       console.log(err);
-      reply('Error while doing operation.').code(500);
+      req.json('Error while doing operation.').code(500);
     }else{
-      reply({ status: 'ok' });
+      req.json({ status: 'ok' });
     }
   });
 };
