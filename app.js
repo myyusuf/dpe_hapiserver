@@ -7,6 +7,8 @@ require('dotenv').config();
 
 const users = require('./routes/users');
 const roles = require('./routes/roles');
+const projects = require('./routes/projects');
+const projectTypes = require('./routes/projecttypes');
 
 const app = express();
 
@@ -18,5 +20,7 @@ app.use(fileUpload());
 
 app.use('/api/users', users);
 app.use('/api/roles', roles);
+app.use('/api/projects', projects);
+app.use('/api/projecttypes', projectTypes);
 
 app.listen(3300);

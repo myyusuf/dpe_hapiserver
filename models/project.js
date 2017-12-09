@@ -11,5 +11,10 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
+
+  Project.associate = function (models) {
+    Project.belongsTo(models.ProjectType, { onDelete: 'restrict' });
+  };
+
   return Project;
 };
