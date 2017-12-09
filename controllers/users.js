@@ -1,92 +1,137 @@
 const generatePassword = require('password-generator');
+const models = require('../models');
 
-exports.create = (req, res) => {
-  const db = req.app.locals.db;
+const sendError = (err, res) => {
+  res.status(500).send(`Error while doing operation: ${err.name}, ${err.message}`);
+};
 
-  const user = {
-    username: req.payload.username,
-    password: generatePassword(),
-    name: req.payload.name,
-    email: req.payload.email,
-  };
-
-  db.query('INSERT INTO users SET ?', user, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.send('Error while doing operation, Ex. non unique value').code(500);
-    } else {
-      res.json({ result });
-    }
+exports.findAll = function findAll(req, res) {
+  const searchText = req.query.searchText ? `%${req.query.searchText}%` : '%%';
+  const limit = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 10;
+  const currentPage = req.query.currentPage ? parseInt(req.query.currentPage, 10) : 1;
+  const offset = (currentPage - 1) * limit;
+  models.User.findAndCountAll({
+    where: {
+      $or: [
+        { username: { $ilike: searchText } },
+        { name: { $ilike: searchText } },
+      ],
+    },
+    include: [
+      { model: models.Role },
+    ],
+    limit,
+    offset,
+  })
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    sendError(err, res);
   });
 };
 
-exports.find = (req, res) => {
-  const db = req.app.locals.db;
-
-  let query = `
-    SELECT * FROM users
-    WHERE (username LIKE ? or name LIKE ?)
-    ORDER BY username
-    LIMIT ?,?`;
-  const pagesize = parseInt(req.query.pagesize, 10);
-  const pagenum = parseInt(req.query.pagenum, 10);
-  const username = `${req.query.searchTxt}%`;
-  const name = `%${req.query.searchTxt}%`;
-
-  db.query(
-    query, [username, name, pagenum * pagesize, pagesize],
-    (err, rows) => {
-      if (err) throw err;
-      query = 'SELECT count(1) as totalRecords FROM users WHERE (username LIKE ? or name LIKE ?)';
-      db.query(
-        query, [username, name],
-        (err2, rows2) => {
-          if (err2) throw err2;
-          const totalRecords = rows2[0].totalRecords;
-          res.json({ data: rows, totalRecords });
-        });
-    });
-};
-
-exports.update = (req, res) => {
-  const db = req.app.locals.db;
-
-  const user = req.payload;
-  const username = req.params.username;
-
-  db.query(
-  `UPDATE users SET name = ?,
-  email = ?
-  WHERE username = ?`,
-    [
-      user.name,
-      user.email,
-      username,
+exports.usersByRole = function findAll(req, res) {
+  const roleCode = req.query.role;
+  models.User.findAll({
+    where: {},
+    include: [
+      { model: models.Role, where: { code: roleCode } },
     ],
-   (err, result) => {
-     if (err) {
-       console.log(err);
-       res.send('Error while doing operation.').code(500);
-     } else {
-       res.json({ result });
-     }
-   });
+  })
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    sendError(err, res);
+  });
 };
 
-exports.remove = (req, res) => {
-  const db = req.app.locals.db;
+exports.findOne = function findOne(req, res) {
+  models.User.findOne({
+    where: { id: req.params.userId },
+  })
+  .then((user) => {
+    res.json(user);
+  })
+  .catch((err) => {
+    sendError(err, res);
+  });
+};
 
-  const username = req.params.username;
+exports.create = function create(req, res) {
+  const userForm = req.body;
+  const roleId = userForm.role;
 
-  db.query(
-  'DELETE FROM users WHERE username = ? ',
-  [username],
-  (err, result) => {
-    if (err) {
-      console.log(err);
-      res.send('Error while doing operation.').code(500);
-    } else {
-      res.json({ result });
-    }
+  models.Role.findOne({
+    where: { id: roleId },
+  })
+  .then((role) => {
+    userForm.password = generatePassword();
+    models.User.create(userForm)
+    .then((user) => {
+      user.setRole(role)
+      .then((result) => {
+        res.json(result);
+      });
+    })
+    .catch((err) => {
+      sendError(err, res);
+    });
+  });
+};
+
+exports.update = function update(req, res) {
+  const userForm = req.body;
+  const roleId = userForm.role;
+
+  models.User.findOne({
+    where: { id: req.params.userId },
+  })
+  .then((user) => {
+    models.Role.findOne({
+      where: { id: roleId },
+    })
+    .then((role) => {
+      user.setRole(role)
+      .then(() => {
+        user.username = userForm.username;
+        user.password = userForm.password;
+        user.name = userForm.name;
+
+        user.save()
+        .then((saveResult) => {
+          res.json(saveResult);
+        });
+      });
+    });
+  })
+  .catch((err) => {
+    sendError(err, res);
+  });
+
+  models.User.update(
+    userForm,
+    {
+      where: { id: req.params.userId },
+    })
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    sendError(err, res);
+  });
+};
+
+exports.destroy = function destroy(req, res) {
+  models.User.destroy(
+    {
+      where: { id: req.params.userId },
+    })
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    sendError(err, res);
   });
 };

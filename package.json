@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Yusuf",
@@ -12,8 +13,10 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "express-fileupload": "^0.2.0",
+    "cors": "^2.8.3",
     "morgan": "~1.8.1",
     "pg": "^6.2.4",
+    "sequelize": "^4.1.0",
     "xlsx": "^0.8.5",
     "dotenv": "^4.0.0",
     "jsonwebtoken": "^7.4.1",
