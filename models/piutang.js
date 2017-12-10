@@ -31,5 +31,10 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
+
+  Piutang.associate = function (models) {
+    Piutang.belongsTo(models.Project, { onDelete: 'restrict' });
+  };
+
   return Piutang;
 };
