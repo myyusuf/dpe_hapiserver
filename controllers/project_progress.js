@@ -14,6 +14,7 @@ exports.findAll = function findAll(req, res) {
   const offset = (currentPage - 1) * limit;
   models.ProjectProgress.findAndCountAll({
     where: {},
+    order: [[models.Project, 'code'], 'month'],
     include: [
       {
         model: models.Project,
