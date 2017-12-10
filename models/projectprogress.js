@@ -19,5 +19,10 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
+
+  ProjectProgress.associate = function (models) {
+    ProjectProgress.belongsTo(models.Project, { onDelete: 'restrict' });
+  };
+
   return ProjectProgress;
 };
