@@ -36,22 +36,20 @@ exports.findAll = function findAll(req, res) {
   });
 };
 
-exports.upload = (req, res) => {
+exports.fileUpload = (req, res) => {
   if (!req.files) {
     res.status(400).send('No files were uploaded.');
   }
 
   const projectProgressFile = req.files.projectProgressFile;
   const targetPath = `${DPEConstant.FILE_UPLOAD_DIR}temp_project_progress.xlsx`;
-  projectProgressFile.mv('targetPath', (err) => {
+  projectProgressFile.mv(targetPath, (err) => {
     if (err) {
       res.status(500).send(err);
     }
-    res.send('File uploaded!');
+    const callback = (result) => {
+      res.json(result);
+    };
+    ExcelReader.readExcel(targetPath, callback);
   });
-
-  const callback = (result) => {
-    res.json(result);
-  };
-  ExcelReader.readExcel(targetPath, this.db, callback);
 };

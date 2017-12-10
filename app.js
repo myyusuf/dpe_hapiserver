@@ -8,7 +8,8 @@ require('dotenv').config();
 const users = require('./routes/users');
 const roles = require('./routes/roles');
 const projects = require('./routes/projects');
-const projectTypes = require('./routes/projecttypes');
+const projectTypes = require('./routes/project_types');
+const projectProgressUpload = require('./routes/project_progress_upload');
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use('/api/users', users);
 app.use('/api/roles', roles);
 app.use('/api/projects', projects);
 app.use('/api/projecttypes', projectTypes);
+app.use('/api/projectprogressupload', projectProgressUpload);
 
 app.listen(3300);

@@ -4,8 +4,7 @@ const models = require('../models');
 const INPUTAN_SHEET_POSITION = 0;
 const RINCIAN_SHEET_POSITION = 1;
 
-exports.readExcel = function (fileName, db, callback) {
-
+exports.readExcel = function (fileName, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[INPUTAN_SHEET_POSITION]];
 
@@ -69,6 +68,11 @@ const getExistingProjectCodes = () => {
 };
 
 const readExcel1 = (fileName, db, theYear, existingProjectCodes) => {
+
+  let theExistingProjectCodes = [];
+  if (existingProjectCodes) {
+    theExistingProjectCodes = existingProjectCodes;
+  }
   return new Promise((resolve, reject) => {
     const workbook = XLSX.readFile(fileName);
 
@@ -145,7 +149,7 @@ const readExcel1 = (fileName, db, theYear, existingProjectCodes) => {
 
     const promises = [];
     const unrecoredProjectProgresses = projectProgresses.filter((projectProgress) => {
-      return !existingProjectCodes.includes(projectProgress.projectCode);
+      return !theExistingProjectCodes.includes(projectProgress.projectCode);
     });
 
     if (unrecoredProjectProgresses.length > 0) {
