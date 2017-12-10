@@ -179,86 +179,58 @@ const readExcel1 = (fileName, theYear, existingProjectCodes) => {
         const project = projects[indexProject];
         projectCodes[project.code] = project.id;
       }
-    });
-    debugger;
-    for (let i = 0; i < projectProgresses.length; i += 1) {
-      const projectCode = projectProgresses[i].projectCode;
-      const year = projectProgresses[i].year;
-      const month = projectProgresses[i].month;
 
-      const rkapOk = projectProgresses[i].rkapOk;
-      const rkapOp = projectProgresses[i].rkapOp;
-      const rkapLk = projectProgresses[i].rkapLk;
+      for (let i = 0; i < projectProgresses.length; i += 1) {
+        const projectCode = projectProgresses[i].projectCode;
+        const year = projectProgresses[i].year;
+        const month = projectProgresses[i].month;
 
-      const realisasiOk = projectProgresses[i].realisasiOk;
-      const realisasiOp = projectProgresses[i].realisasiOp;
-      const realisasiLk = projectProgresses[i].realisasiLk;
+        const rkapOk = projectProgresses[i].rkapOk;
+        const rkapOp = projectProgresses[i].rkapOp;
+        const rkapLk = projectProgresses[i].rkapLk;
 
-      const prognosaOk = projectProgresses[i].prognosaOk;
-      const prognosaOp = projectProgresses[i].prognosaOp;
-      const prognosaLk = projectProgresses[i].prognosaLk;
+        const realisasiOk = projectProgresses[i].realisasiOk;
+        const realisasiOp = projectProgresses[i].realisasiOp;
+        const realisasiLk = projectProgresses[i].realisasiLk;
 
-      // const query = 'INSERT INTO project_progress (project_id, year, month, rkap_ok, rkap_op, rkap_lk, ' +
-      // 'realisasi_ok, realisasi_op, realisasi_lk, prognosa_ok, prognosa_op, prognosa_lk) ' +
-      // 'SELECT id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? FROM project WHERE code = ? ';
+        const prognosaOk = projectProgresses[i].prognosaOk;
+        const prognosaOp = projectProgresses[i].prognosaOp;
+        const prognosaLk = projectProgresses[i].prognosaLk;
 
-      promises.push(new Promise((resolve2, reject2) => {
-        models.ProjectProgress.create({
-          year,
-          month,
-          rkapOk,
-          rkapOp,
-          rkapLk,
-          realisasiOk,
-          realisasiOp,
-          realisasiLk,
-          prognosaOk,
-          prognosaOp,
-          prognosaLk,
-          ProjectId: projectCodes[projectCode],
-        })
-        .then(() => {
-          resolve2({
-            // affectedRows: result.affectedRows,
-            // projectCode,
+        promises.push(new Promise((resolve2, reject2) => {
+          models.ProjectProgress.create({
+            year,
+            month,
+            rkapOk,
+            rkapOp,
+            rkapLk,
+            realisasiOk,
+            realisasiOp,
+            realisasiLk,
+            prognosaOk,
+            prognosaOp,
+            prognosaLk,
+            ProjectId: projectCodes[projectCode],
+          })
+          .then(() => {
+            resolve2({
+              // affectedRows: result.affectedRows,
+              // projectCode,
+            });
+          })
+          .catch((err) => {
+            reject2(err);
           });
-        })
-        .catch((err) => {
-          reject2(err);
-        });
+        }));
+      }
 
-        // db.query(query, [
-        //   year,
-        //   month,
-        //   rkapOk,
-        //   rkapOp,
-        //   rkapLk,
-        //   realisasiOk,
-        //   realisasiOp,
-        //   realisasiLk,
-        //   prognosaOk,
-        //   prognosaOp,
-        //   prognosaLk,
-        //   projectCode], (err, result) => {
-        //     if (err) {
-        //       // console.log(err);
-        //       reject2(err);
-        //     } else {
-        //       resolve2({
-        //         affectedRows: result.affectedRows,
-        //         projectCode,
-        //       });
-        //     }
-        //   });
-      }));
-    }
-
-    Promise.all(promises)
-    .then((results) => {
-      resolve(results);
-    })
-    .catch((err) => {
-      reject(err);
+      Promise.all(promises)
+      .then((results) => {
+        resolve(results);
+      })
+      .catch((err) => {
+        reject(err);
+      });
     });
   });
 };
