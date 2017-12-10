@@ -1,4 +1,7 @@
 const models = require('../models');
+const ExcelReader = require('../helpers/excel_reader');
+
+const DPEConstant = require('../config/dpe_constant.js');
 
 const sendError = (err, res) => {
   res.status(500).send(`Error while doing operation: ${err.name}, ${err.message}`);
@@ -33,18 +36,22 @@ exports.findAll = function findAll(req, res) {
   });
 };
 
-// exports.fileUpload = (req, res) => {
-//   if (!req.files) {
-//     return res.status(400).send('No files were uploaded.');
-//   }
-//
-//   // The name of the input field (i.e. "seminarFile") is used to retrieve the uploaded file
-//   const seminarFile = req.files.seminarFile;
-//   const seminarId = req.params.seminarId;
-//
-//   const workbook = new Excel.Workbook();
-//   const stream = new Readable();
-//   stream._read = function noop() {};
-//   stream.push(seminarFile.data);
-//   stream.push(null);
-// };
+exports.upload = (req, res) => {
+  if (!req.files) {
+    res.status(400).send('No files were uploaded.');
+  }
+
+  const projectProgressFile = req.files.projectProgressFile;
+  const targetPath = `${DPEConstant.FILE_UPLOAD_DIR}temp_project_progress.xlsx`;
+  projectProgressFile.mv('targetPath', (err) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.send('File uploaded!');
+  });
+
+  const callback = (result) => {
+    res.json(result);
+  };
+  ExcelReader.readExcel(targetPath, this.db, callback);
+};
