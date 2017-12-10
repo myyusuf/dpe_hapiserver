@@ -67,7 +67,7 @@ const getExistingProjectCodes = () => {
   });
 };
 
-const readExcel1 = (fileName, db, theYear, existingProjectCodes) => {
+const readExcel1 = (fileName, theYear, existingProjectCodes) => {
 
   let theExistingProjectCodes = [];
   if (existingProjectCodes) {
@@ -180,7 +180,7 @@ const readExcel1 = (fileName, db, theYear, existingProjectCodes) => {
         projectCodes[project.code] = project.id;
       }
     });
-
+    debugger;
     for (let i = 0; i < projectProgresses.length; i += 1) {
       const projectCode = projectProgresses[i].projectCode;
       const year = projectProgresses[i].year;

@@ -1,5 +1,5 @@
 const express = require('express');
-const ProjectTypeController = require('../controllers/projecttypes.js');
+const ProjectTypeController = require('../controllers/project_types.js');
 
 const router = express.Router();
 
