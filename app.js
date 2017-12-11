@@ -13,6 +13,8 @@ const projectProgresses = require('./routes/project_progresses');
 const projectProgressUpload = require('./routes/project_progress_upload');
 const piutangs = require('./routes/piutangs');
 const piutangUpload = require('./routes/piutang_upload');
+const projections = require('./routes/projections');
+const projectionUpload = require('./routes/projection_upload');
 
 const app = express();
 
@@ -30,5 +32,7 @@ app.use('/api/projectprogresses', projectProgresses);
 app.use('/api/projectprogressupload', projectProgressUpload);
 app.use('/api/piutangs', piutangs);
 app.use('/api/piutangupload', piutangUpload);
+app.use('/api/projections', projections);
+app.use('/api/projectionupload', projectionUpload);
 
 app.listen(3300);
