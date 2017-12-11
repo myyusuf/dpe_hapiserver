@@ -63,14 +63,15 @@ const readProjectionsDataInAYear = (worksheet, year, startRow) => {
       month,
       year,
     };
-    projectionDataInAYear.push([
-      projectionData.pdp,
-      projectionData.tagihanBruto,
-      projectionData.piutangUsaha,
-      projectionData.piutangRetensi,
-      projectionData.month,
-      year,
-    ]);
+    // projectionDataInAYear.push([
+    //   projectionData.pdp,
+    //   projectionData.tagihanBruto,
+    //   projectionData.piutangUsaha,
+    //   projectionData.piutangRetensi,
+    //   projectionData.month,
+    //   year,
+    // ]);
+    projectionDataInAYear.push(projectionData);
   }
   return projectionDataInAYear;
 };
@@ -86,6 +87,10 @@ exports.readExcel = fileName => (
     .then(() => {
       bulkInsertProjection(projectionsDataInAYear).then(() => {
         resolve({ status: 'OK' });
+      })
+      .catch((err) => {
+        console.log(err);
+        reject(err);
       });
     })
     .catch((err) => {
