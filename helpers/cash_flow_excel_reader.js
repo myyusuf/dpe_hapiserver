@@ -53,7 +53,7 @@ const insertCashFlow = cashFlowData => (
       Promise.all(promises)
       .then(() => {
         resolve(result);
-      }).error((err) => {
+      }).catch((err) => {
         reject(err);
       });
     })
