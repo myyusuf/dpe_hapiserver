@@ -15,6 +15,8 @@ const piutangs = require('./routes/piutangs');
 const piutangUpload = require('./routes/piutang_upload');
 const projections = require('./routes/projections');
 const projectionUpload = require('./routes/projection_upload');
+const cashFlows = require('./routes/cash_flows');
+const cashFlowUpload = require('./routes/cash_flow_upload');
 
 const app = express();
 
@@ -34,5 +36,7 @@ app.use('/api/piutangs', piutangs);
 app.use('/api/piutangupload', piutangUpload);
 app.use('/api/projections', projections);
 app.use('/api/projectionupload', projectionUpload);
+app.use('/api/cashFlows', cashFlows);
+app.use('/api/cashFlowupload', cashFlowUpload);
 
 app.listen(3300);
