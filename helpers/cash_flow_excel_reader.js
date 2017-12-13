@@ -86,12 +86,21 @@ const readCashFlowItems = (worksheet, startRow) => {
 const readAllCashFlowDataInAYear = (worksheet, year) => {
   const allCashFlowDataInAYear = [];
   const saldoAwal = {
+    typeCode: 1,
     year,
     rkap: readCell(worksheet, 11, 19) || 0,
     rolling: readCell(worksheet, 11, 20) || 0,
     items: readCashFlowItems(worksheet, 11),
   };
+  const penerimaan = {
+    typeCode: 2,
+    year,
+    rkap: readCell(worksheet, 15, 19) || 0,
+    rolling: readCell(worksheet, 15, 20) || 0,
+    items: readCashFlowItems(worksheet, 15),
+  };
   allCashFlowDataInAYear.push(saldoAwal);
+  allCashFlowDataInAYear.push(penerimaan);
   return allCashFlowDataInAYear;
 };
 

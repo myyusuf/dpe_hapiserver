@@ -14,7 +14,7 @@ exports.findAll = function findAll(req, res) {
   const offset = (currentPage - 1) * limit;
   models.CashFlowItem.findAndCountAll({
     where: {},
-    order: ['month', [models.CashFlow, 'year']],
+    order: [[models.CashFlow, 'typeCode'], 'month', [models.CashFlow, 'year']],
     include: [
       {
         model: models.CashFlow,
