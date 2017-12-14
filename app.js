@@ -17,6 +17,8 @@ const projections = require('./routes/projections');
 const projectionUpload = require('./routes/projection_upload');
 const cashFlows = require('./routes/cash_flows');
 const cashFlowUpload = require('./routes/cash_flow_upload');
+const bads = require('./routes/bads');
+const badUpload = require('./routes/bad_upload');
 
 const app = express();
 
@@ -38,5 +40,7 @@ app.use('/api/projections', projections);
 app.use('/api/projectionupload', projectionUpload);
 app.use('/api/cashFlows', cashFlows);
 app.use('/api/cashFlowupload', cashFlowUpload);
+app.use('/api/bads', bads);
+app.use('/api/badupload', badUpload);
 
 app.listen(3300);
