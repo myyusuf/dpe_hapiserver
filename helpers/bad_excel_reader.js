@@ -43,7 +43,7 @@ const readCell = (worksheet, rowNum, colNum) => {
 
 const isEndOfData = (worksheet, rowNum) => {
   const cellData = readCell(worksheet, rowNum, 0);
-  if (cellData.trim() === 'TOTAL') {
+  if (cellData === 'TOTAL') {
     return true;
   }
   return false;
@@ -54,6 +54,7 @@ exports.readExcel = fileName => (
     const workbook = XLSX.readFile(fileName);
     const worksheet = workbook.Sheets[workbook.SheetNames[BAD_SHEET_POSITION]];
     // const yearCellValue = worksheet.F6.v;
+    console.log(workbook.SheetNames);
     const year = 2017;
     const bads = [];
     deleteBadTable(year)
@@ -80,6 +81,7 @@ exports.readExcel = fileName => (
               piutangRetensi,
               pdp,
               bad,
+              year,
             });
           }
         }
