@@ -1,32 +1,34 @@
+const sequelize = require('sequelize');
+const models = require('../models');
 const Flow = require('nimble');
 
-exports.getMainData = function(db, month, year, resultCallback) {
-
-  const result = {
-  };
+exports.getMainData = (month, year, resultCallback) => {
+  const result = {};
 
   const getLatesRealizationMonth = (callback) => {
-    const query =
-    `SELECT MAX(month) AS maxMonth FROM (SELECT
-      pp.month AS month, SUM(realisasi_ok) AS sum_realisasi_ok
-      FROM project_progress pp
-      WHERE pp.year = ? AND pp.realisasi_ok > 0
-      GROUP BY pp.month) AS a_table
-    `;
-
-    db.query(
-      query, [year],
-      (err, rows) => {
-        if (err) callback(err);
-
-        if (rows.length > 0) {
-          result.latestRealizationMonth = rows[0].maxMonth;
-        } else {
-          result.latestRealizationMonth = 1;
-        }
-        callback();
+    models.ProjectProgress.findAll({
+      where: { year, realisasiOk: { $gt: 0 } },
+      attributes: [
+        'month',
+        [sequelize.fn('sum', sequelize.col('realisasiOk')), 'sum_realisasi_ok'],
+      ],
+      group: ['month'],
+    })
+    .then((rows) => {
+      if (rows.length > 0) {
+        const maxMonth = rows.reduce(
+          (max, obj) => Math.max(max, obj.sum_realisasi_ok),
+          rows[0].sum_realisasi_ok);
+        result.latestRealizationMonth = maxMonth;
+      } else {
+        result.latestRealizationMonth = 1;
       }
-    );
+      callback();
+    })
+    .catch((err) => {
+      console.error(err);
+      callback(err);
+    });
   };
 
   var getSumProjectProgressPerMonth = function(callback){

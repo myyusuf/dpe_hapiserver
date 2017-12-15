@@ -66,7 +66,7 @@ exports.getDashboardData = (req, res) => {
     },
   };
 
-  DashboardMain.getMainData(this.db, month, year, (mainDataResult) => {
+  DashboardMain.getMainData(month, year, (mainDataResult) => {
     const totalProyekLamaNonJO = {};
     const totalProyekLamaJO = {};
     const totalProyekBaruDiperolehNonJO = {};
@@ -250,7 +250,7 @@ exports.allCharts = (req, res) => {
 
   DashboardChart.getChartData(year, (chartDataList) => {
     for (let i = 0; i < chartDataList.length; i += 1) {
-      const chartData = chartDataList[i];
+      const chartData = chartDataList[i].dataValues;
 
       const okData = {
         month: MONHTS[chartData.month - 1],

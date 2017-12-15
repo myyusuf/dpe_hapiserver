@@ -20,6 +20,7 @@ const cashFlows = require('./routes/cash_flows');
 const cashFlowUpload = require('./routes/cash_flow_upload');
 const bads = require('./routes/bads');
 const badUpload = require('./routes/bad_upload');
+const dashboard = require('./routes/dashboard');
 
 const app = express();
 
@@ -44,5 +45,6 @@ app.use('/api/cashFlows', cashFlows);
 app.use('/api/cashFlowupload', cashFlowUpload);
 app.use('/api/bads', bads);
 app.use('/api/badupload', badUpload);
+app.use('/api/dashboard', dashboard);
 
 app.listen(3300);
