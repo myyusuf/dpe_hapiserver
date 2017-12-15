@@ -31,36 +31,46 @@ exports.getMainData = (month, year, resultCallback) => {
     });
   };
 
-  var getSumProjectProgressPerMonth = function(callback){
-    var query = "SELECT p.project_type, " +
-
-    "SUM(rkap_ok) AS sum_rkap_ok, " +
-    "SUM(rkap_op) AS sum_rkap_op, " +
-    "SUM(rkap_lk) AS sum_rkap_lk, " +
-
-    "SUM(realisasi_ok) AS sum_realisasi_ok, " +
-    "SUM(realisasi_op) AS sum_realisasi_op, " +
-    "SUM(realisasi_lk) AS sum_realisasi_lk, " +
-
-    "SUM(prognosa_ok) AS sum_prognosa_ok, " +
-    "SUM(prognosa_op) AS sum_prognosa_op, " +
-    "SUM(prognosa_lk) AS sum_prognosa_lk " +
-
-    "FROM project_progress pp " +
-    "LEFT JOIN project p ON pp.project_id = p.id " +
-    "WHERE pp.month <= ? AND pp.year = ? " +
-    "GROUP BY p.project_type ";
-
-    db.query(
-      query, [month, year],
-      function(err, rows) {
-        if (err) throw callback(err);
-
-        result.sumProjectProgressPerMonth = rows;
-        callback();
-      }
-    );
-  }
+  const getSumProjectProgressPerMonth = (callback) => {
+    models.ProjectProgress.findAll({
+      where: { year, month: { $lte: month } },
+      include: [
+        {
+          model: models.Project,
+          include: [
+            {
+              model: models.ProjectType,
+            },
+          ],
+        },
+      ],
+      attributes: [
+        'Project.ProjectType.id',
+        [sequelize.fn('sum', sequelize.col('rkapOk')), 'sum_rkap_ok'],
+        [sequelize.fn('sum', sequelize.col('rkapOp')), 'sum_rkap_op'],
+        [sequelize.fn('sum', sequelize.col('rkapLk')), 'sum_rkap_lk'],
+        [sequelize.fn('sum', sequelize.col('realisasiOk')), 'sum_realisasi_ok'],
+        [sequelize.fn('sum', sequelize.col('realisasiOp')), 'sum_realisasi_op'],
+        [sequelize.fn('sum', sequelize.col('realisasiLk')), 'sum_realisasi_lk'],
+        [sequelize.fn('sum', sequelize.col('prognosaOk')), 'sum_prognosa_ok'],
+        [sequelize.fn('sum', sequelize.col('prognosaOp')), 'sum_prognosa_op'],
+        [sequelize.fn('sum', sequelize.col('prognosaLk')), 'sum_prognosa_lk'],
+      ],
+      group: ['Project.ProjectType.id'],
+    })
+    .then((rows) => {
+      result.sumProjectProgressPerMonth = rows.map((row) => {
+        const tmp = row.dataValues;
+        tmp['project_type'] = tmp.id;
+        return tmp;
+      });
+      callback();
+    })
+    .catch((err) => {
+      console.error(err);
+      callback(err);
+    });
+  };
 
   var getSumProjectProgressLastMonthOfYear = function(callback){
     var query = "SELECT p.project_type, " +
@@ -132,30 +142,6 @@ exports.getMainData = (month, year, resultCallback) => {
       }
     );
   };
-
-  // var getSumLspInYear = function(callback){
-  //   var query = "SELECT " +
-  //
-  //   "SUM(lsp_rkap) AS sum_lsp_rkap, " +
-  //   "SUM(lsp_prognosa) AS sum_lsp_prognosa, " +
-  //   "SUM(lsp_realisasi) AS sum_lsp_realisasi " +
-  //
-  //   "FROM lsp " +
-  //   "WHERE year = ? ";
-  //
-  //   db.query(
-  //     query, [year],
-  //     function(err, rows) {
-  //       if (err) throw callback(err);
-  //
-  //       result.sumLspInYear = null
-  //       if(rows.length > 0){
-  //         result.sumLspInYear = rows[0];
-  //       }
-  //       callback();
-  //     }
-  //   );
-  // }
 
   var getLspInLastMonthOfYear = function(callback){
     var query = "SELECT " +
