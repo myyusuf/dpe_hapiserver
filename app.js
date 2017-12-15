@@ -5,6 +5,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
+const security = require('./routes/security');
 const users = require('./routes/users');
 const roles = require('./routes/roles');
 const projects = require('./routes/projects');
@@ -28,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload());
 
+app.use('/api/security', security);
 app.use('/api/users', users);
 app.use('/api/roles', roles);
 app.use('/api/projects', projects);
