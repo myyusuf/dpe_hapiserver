@@ -208,9 +208,15 @@ exports.getDashboardData = (req, res) => {
       result.data7.lk = (ppLastMonthOfYear[4].sum_prognosa_lk + ppLastMonthOfYear[5].sum_prognosa_lk) -
       (totalProyekBaruPengusahaanNonJO.sum_realisasi_lk + totalProyekBaruPengusahaanJO.sum_realisasi_lk);
 
-      result.data8.ok = mainDataResult.claim.ok;
-      result.data8.op = mainDataResult.claim.op;
-      result.data8.lk = mainDataResult.claim.lk;
+      if (mainDataResult.claim) {
+        result.data8.ok = mainDataResult.claim.ok;
+        result.data8.op = mainDataResult.claim.op;
+        result.data8.lk = mainDataResult.claim.lk;
+      } else {
+        result.data8.ok = 0;
+        result.data8.op = 0;
+        result.data8.lk = 0;
+      }
 
       // TODO Ask
       result.data5.ok = result.data5.ok - result.data8.ok;
