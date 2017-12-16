@@ -422,7 +422,7 @@ const readExcel2 = function (fileName, db, theYear) {
     });
 };
 
-const readClaim = (fileName, db, theYear) => (
+const readClaim = (fileName, theYear) => (
   new Promise((resolve, reject) => {
     const workbook = XLSX.readFile(fileName);
     const firstSheetName = workbook.SheetNames[RINCIAN_SHEET_POSITION];

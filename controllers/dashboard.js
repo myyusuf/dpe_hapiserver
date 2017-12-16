@@ -65,7 +65,6 @@ exports.getDashboardData = (req, res) => {
       lk: 0,
     },
   };
-
   DashboardMain.getMainData(month, year, (mainDataResult) => {
     const totalProyekLamaNonJO = {};
     const totalProyekLamaJO = {};
