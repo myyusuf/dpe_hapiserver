@@ -32,6 +32,28 @@ exports.findAll = function findAll(req, res) {
   });
 };
 
+exports.findAll = function findAll(req, res) {
+  const year = req.params.year;
+  const month = req.params.month;
+
+  models.CashFlowItem.findAll({
+    where: { month },
+    order: [[models.CashFlow, 'typeCode'], 'month', [models.CashFlow, 'year']],
+    include: [
+      {
+        model: models.CashFlow,
+        where: { year },
+      },
+    ],
+  })
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    sendError(err, res);
+  });
+};
+
 exports.fileUpload = (req, res) => {
   if (!req.files) {
     res.status(400).send('No files were uploaded.');
