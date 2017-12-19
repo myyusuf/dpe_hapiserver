@@ -3,6 +3,7 @@ const ProjectionController = require('../controllers/projection.js');
 
 const router = express.Router();
 
-router.get('/', ProjectionController.findAll);
+router.get('/', ProjectionController.findAndCountAll);
+router.get('/proyeksi/:year/:month', ProjectionController.findAll);
 
 module.exports = router;
