@@ -7,7 +7,7 @@ const sendError = (err, res) => {
   res.status(500).send(`Error while doing operation: ${err.name}, ${err.message}`);
 };
 
-exports.findAndCountAll = function findAll(req, res) {
+exports.findAndCountAll = function findAndCountAll(req, res) {
   const searchText = req.query.searchText ? `%${req.query.searchText}%` : '%%';
   const limit = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 10;
   const currentPage = req.query.currentPage ? parseInt(req.query.currentPage, 10) : 1;
