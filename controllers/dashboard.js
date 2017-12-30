@@ -1,7 +1,7 @@
 const DashboardMain = require('../helpers/dashboard_main');
 const DashboardChart = require('../helpers/dashboard_chart');
 
-const MONHTS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
+const MONHTS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Des'];
 
 exports.getDashboardData = (req, res) => {
   const year = req.params.year;
