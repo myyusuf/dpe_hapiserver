@@ -4,7 +4,7 @@ const models = require('../models');
 const DPEConstant = require('../config/dpe_constant.js');
 
 const sendLoginFailedMessage = (req, res) => {
-  res.send('Invalid username or password', 403);
+  res.status(403).send('Invalid username or password');
 };
 
 exports.signIn = function(req, res) {

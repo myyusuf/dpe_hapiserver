@@ -19,7 +19,8 @@ exports.getChartData = (year, resultCallback) => {
     group: ['month'],
   })
   .then((result) => {
-    resultCallback(result);
+    const projectProgresses = result;
+    resultCallback(projectProgresses.sort((a, b) => a.month - b.month));
   })
   .catch((err) => {
     console.error(err);
