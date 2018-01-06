@@ -31,12 +31,13 @@ exports.getChartData = (year, resultCallback) => {
 exports.getLspChartData = (year, resultCallback) => {
   models.Lsp.findAll({
     where: { year },
+    raw: true,
   })
   .then((result) => {
     const convertedResult = result.map(obj => ({
-      lsp_rkap: obj.rkap,
-      lsp_prognosa: obj.prognosa,
-      lsp_realisasi: obj.realisasi,
+      lsp_rkap: obj.lspRkap,
+      lsp_prognosa: obj.lspPrognosa,
+      lsp_realisasi: obj.lspRealisasi,
     }));
     resultCallback(convertedResult);
   })

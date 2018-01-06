@@ -282,13 +282,13 @@ exports.allCharts = (req, res) => {
 
     DashboardChart.getLspChartData(year, (chartDataList2) => {
       for (let i = 0; i < chartDataList2.length; i += 1) {
-        const chartData = chartDataList2[i];
-        const lkData = {
-          month: MONHTS[chartData.month - 1],
-          plan: chartData.lsp_prognosa,
-          actual: chartData.lsp_realisasi,
+        const chartData2 = chartDataList2[i];
+        const lspData = {
+          month: MONHTS[chartData2.month - 1],
+          plan: chartData2.lsp_prognosa,
+          actual: chartData2.lsp_realisasi,
         };
-        result.lspData.push(lkData);
+        result.lspData.push(lspData);
       }
       res.json(result);
     });
