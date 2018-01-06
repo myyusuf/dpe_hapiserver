@@ -114,7 +114,7 @@ exports.getDashboardData = (req, res) => {
 
     for (let i = 0; i < list.length; i += 1) {
       const data = list[i];
-      switch (data.project_type) {
+      switch (parseInt(data.project_type, 10)) {
         case 1:
           fillData(totalProyekLamaNonJO, data);
           break;
