@@ -1,5 +1,6 @@
 const models = require('../models');
 const BadExcelReader = require('../helpers/bad_excel_reader');
+const BadBatchCreate = require('../helpers/batch_create/bad');
 
 const DPEConstant = require('../config/dpe_constant.js');
 
@@ -74,5 +75,15 @@ exports.fileUpload = (req, res) => {
     .then((result) => {
       res.json(result);
     });
+  });
+};
+
+exports.batchCreate = (req, res) => {
+  BadBatchCreate.process(req.body)
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    res.json(err);
   });
 };
