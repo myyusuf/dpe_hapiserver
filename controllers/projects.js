@@ -16,6 +16,7 @@ exports.findAll = function findAll(req, res) {
         { name: { $ilike: searchText } },
       ],
     },
+    order: ['code'],
     include: [
       { model: models.ProjectType },
     ],
