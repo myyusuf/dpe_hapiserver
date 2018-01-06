@@ -21,6 +21,7 @@ const cashFlowUpload = require('./routes/cash_flow_upload');
 const bads = require('./routes/bads');
 const badUpload = require('./routes/bad_upload');
 const dashboard = require('./routes/dashboard');
+const batchCreate = require('./routes/batch_create');
 
 const app = express();
 
@@ -46,5 +47,7 @@ app.use('/api/cashFlowupload', cashFlowUpload);
 app.use('/api/bads', bads);
 app.use('/api/badupload', badUpload);
 app.use('/api/dashboard', dashboard);
+app.use('/api/batchcreate', batchCreate);
+
 
 app.listen(3300);

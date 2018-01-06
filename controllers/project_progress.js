@@ -1,5 +1,6 @@
 const models = require('../models');
 const ExcelReader = require('../helpers/excel_reader');
+const ProjectProgressBatchCreate = require('../helpers/batch_create/project_progress');
 
 const DPEConstant = require('../config/dpe_constant.js');
 
@@ -52,5 +53,12 @@ exports.fileUpload = (req, res) => {
       res.json(result);
     };
     ExcelReader.readExcel(targetPath, callback);
+  });
+};
+
+exports.batchCreate = (req, res) => {
+  ProjectProgressBatchCreate.process(req.body)
+  .then((result) => {
+    res.json(result);
   });
 };
