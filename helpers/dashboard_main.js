@@ -319,6 +319,9 @@ exports.getMainData = (month, year, resultCallback) => {
       result.lspInLastMonthOfYear = null;
       if (rows.length > 0) {
         result.lspInLastMonthOfYear = rows[0];
+        result.lspInLastMonthOfYear.lsp_rkap = rows[0].lspRkap;
+        result.lspInLastMonthOfYear.lsp_realisasi = rows[0].lspRealisasi;
+        result.lspInLastMonthOfYear.lsp_prognosa = rows[0].lspPrognosa;
       }
       callback();
     }).catch((err) => {
@@ -334,6 +337,7 @@ exports.getMainData = (month, year, resultCallback) => {
       result.lspInMonth = null;
       if (rows.length > 0) {
         result.lspInMonth = rows[0];
+        result.lspInMonth.lsp_realisasi = rows[0].lspRealisasi;
       }
       callback();
     }).catch((err) => {
