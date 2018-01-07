@@ -1,5 +1,6 @@
 const models = require('../models');
 const CashFlowExcelReader = require('../helpers/cash_flow_excel_reader');
+const CashFlowBatchCreate = require('../helpers/batch_create/cash_flow');
 
 const DPEConstant = require('../config/dpe_constant.js');
 
@@ -69,5 +70,15 @@ exports.fileUpload = (req, res) => {
     .then((result) => {
       res.json(result);
     });
+  });
+};
+
+exports.batchCreate = (req, res) => {
+  CashFlowBatchCreate.process(req.body)
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    res.json(err);
   });
 };
