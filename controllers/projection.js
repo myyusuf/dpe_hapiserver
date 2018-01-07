@@ -1,5 +1,6 @@
 const models = require('../models');
 const ProjectionExcelReader = require('../helpers/projection_excel_reader');
+const ProjectionBatchCreate = require('../helpers/batch_create/projection');
 
 const DPEConstant = require('../config/dpe_constant.js');
 
@@ -67,5 +68,15 @@ exports.fileUpload = (req, res) => {
     .then((result) => {
       res.json(result);
     });
+  });
+};
+
+exports.batchCreate = (req, res) => {
+  ProjectionBatchCreate.process(req.body)
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    res.json(err);
   });
 };
