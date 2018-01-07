@@ -35,6 +35,7 @@ exports.getLspChartData = (year, resultCallback) => {
   })
   .then((result) => {
     const convertedResult = result.map(obj => ({
+      month: obj.month,
       lsp_rkap: obj.lspRkap,
       lsp_prognosa: obj.lspPrognosa,
       lsp_realisasi: obj.lspRealisasi,
