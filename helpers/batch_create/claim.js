@@ -15,7 +15,9 @@ exports.process = batchData => (
         lk: payload.lk,
       })
       .then(() => {
-        resolve();
+        resolve({
+          status: 'OK',
+        });
       })
       .catch((errCreate) => {
         reject(errCreate);
