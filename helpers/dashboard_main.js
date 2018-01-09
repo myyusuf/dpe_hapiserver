@@ -17,11 +17,9 @@ exports.getMainData = (month, year, resultCallback) => {
     .then((rows) => {
       if (rows.length > 0) {
         let maxMonth = 1;
-        let maxValue = 0;
         for (let i = 0; i < rows.length; i += 1) {
           const projectProgressSum = rows[i].dataValues;
-          if (projectProgressSum.sum_realisasi_ok >= maxValue) {
-            maxValue = projectProgressSum.sum_realisasi_ok;
+          if (projectProgressSum.sum_realisasi_ok > 0 && projectProgressSum.month >= maxMonth) {
             maxMonth = projectProgressSum.month;
           }
         }
