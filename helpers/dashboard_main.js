@@ -255,7 +255,7 @@ exports.getMainData = (month, year, resultCallback) => {
           sumRkapLk += projectProgress.rkapLk;
           sumPrognosaOk += (projectProgress.month > result.latestRealizationMonth ?
             projectProgress.prognosaOk : projectProgress.realisasiOk);
-          sumPrognosaOp += (projectProgress.month > result.latestRealizationMonth ?
+          sumPrognosaOp += (((projectProgress.month > result.latestRealizationMonth) || projectProgress.month == 12) ?
             projectProgress.prognosaOp : projectProgress.realisasiOp);
           sumPrognosaLk += (projectProgress.month > result.latestRealizationMonth ?
             projectProgress.prognosaLk : projectProgress.realisasiLk);
